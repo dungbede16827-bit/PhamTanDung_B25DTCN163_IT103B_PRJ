@@ -1,0 +1,145 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+body {
+    font-family: Arial;
+    background: #f2f2f2;
+    margin: 0;
+}
+
+.topbar{
+    display: flex;
+    justify-content: space-between;
+    background: #4b43d0;
+    color:white;
+    padding: 15px 40px;
+    font-size: 18px;
+}
+
+.banner{
+    background: #4b43d0;
+    color: white;
+    text-align: center;
+    padding: 35px;
+    margin: 30px auto;
+    width: 70%;
+    border-radius: 10px;
+    width: 845px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+.container {
+    width: 850px;
+    margin: auto;
+}
+.title {
+    text-align: center;
+    color: #4b43d0;
+    margin-bottom: 20px 0;
+}
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow:0 4px 10px  rgba(0,0,0,0.15) ;
+}
+.row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    flex: 1;
+}
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.blue{
+    background: #3b82f6;
+    color: white;
+}
+
+.green {
+    background: #22c55e;
+    color: white;
+}
+.purple {
+    background: #6366f1;
+    color: white;
+}
+.money {
+    color: #16a34a;
+    font-size: 22px;
+    margin-top: 10px;
+}
+.list {
+    list-style: none;
+    margin-top: 15px;
+}
+.list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+.delete {
+    color: red;
+    cursor: pointer;
+}
+.pagination {
+    text-align: center;
+    margin-top: 15px;
+}
+.pagination button {
+    margin: 5px;
+    padding: 5px 12px;
+}
+.active {
+    background: #3b82f6;
+    color: white;
+}
+.warning {
+    background: #ffe4e6;
+    color: red;
+    text-align: center;
+}
+table {
+    width: 100%;
+    border-collapse:collapse ;
+    margin-top: 10px;
+}
+th,td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.ok {
+    color: green;
+}
+.fail {
+    color: red;
+}
+footer {
+    background: #4f46e5;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 40px;
+}

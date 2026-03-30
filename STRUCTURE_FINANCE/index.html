@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Structure Finance</title>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="logo">📒 Tài Chính Cá Nhân K24_Rikkei</div>
+        <div>Tài Khoản ▾</div>
+    </header>
+
+    <section class="banner">
+        <h2>🎯 Kiểm soát chi tiêu thông minh</h2>
+        <p>Theo dõi ngân sách và thu chi hàng tháng dễ dàng</p>
+    </section>
+
+    <div class="container">
+
+        <h2 class="title">📊 Quản Lý Tài Chính Cá Nhân</h2>
+
+        <div class="card">
+            <label>📅 Chọn tháng:</label>
+            <input type="month">
+        </div>
+
+        <div class="card">
+            <label>Ngân sách tháng:</label>
+            <input type="number" placeholder="VD: 5000000">
+            <button class="btn blue">Lưu</button>
+        </div>
+
+        <div class="card center">
+            <h3>Số tiền còn lại</h3>
+            <p class="money">0 VND</p>
+        </div>
+
+        <div class="card">
+            <h3>💼 Quản lý danh mục</h3>
+
+            <div class="row">
+                <input placeholder="Tên danh mục">
+                <input placeholder="Giới hạn (VND)">
+                <button class="btn green">Thêm danh mục</button>
+            </div>
+
+            <ul class="list">
+                <li>tiền phòng - Giới hạn: 2,000,000 VND <span>Sửa Xóa</span></li>
+                <li>tiền ăn - Giới hạn: 1,000,000 VND <span>Sửa Xóa</span></li>
+                <li>tiền xăng xe - Giới hạn: 500,000 VND <span>Sửa Xóa</span></li>
+            </ul>
+
+        </div>
+
+        <div class="card">
+            <div class="row">
+                <input placeholder="Số tiền">
+                <input placeholder="Tiền chi tiêu">
+                <input placeholder="Ghi chú">
+                <button class="btn purple">Thêm</button>
+            </div>
+        </div>
+
+        <div class="card">
+
+            <h3 class="red">📄 Lịch sử giao dịch</h3>
+
+            <div class="row">
+                <input placeholder="tìm nội dung">
+                <button class="btn blue">🔍</button>
+                <button class="btn">Sắp xếp theo giá</button>
+            </div>
+
+            <ul class="list">
+                <li>tiền phòng - đóng tiền phòng: 2,000,000 VND <span class="delete">Xoá</span></li>
+                <li>tiền xăng xe - đổ xăng: 100,000 VND <span class="delete">Xoá</span></li>
+                <li>tiền ăn - trà sữa: 30,000 VND <span class="delete">Xoá</span></li>
+            </ul>
+
+            <div class="pagination">
+                <button>Previous</button>
+                <button class="active">1</button>
+                <button>2</button>
+                <button>3</button>
+                <button>Next</button>
+            </div>
+
+        </div>
+
+        <div class="card warning">
+            Danh mục "tiền ăn" đã vượt giới hạn: 1,060,000 / 1,000,000 VND
+        </div>
+
+        <div class="card">
+
+            <h3>📅 Thống kê chi tiêu các tháng</h3>
+
+            <table>
+
+                <tr>
+                    <th>Tháng</th>
+                    <th>Chi tiêu</th>
+                    <th>Ngân sách</th>
+                    <th>Trạng thái</th>
+                </tr>
+
+                <tr>
+                    <td>2025-03</td>
+                    <td>2,150,000 VND</td>
+                    <td>5,000,000</td>
+                    <td class="ok">Đạt</td>
+                </tr>
+
+                <tr>
+                    <td>2025-04</td>
+                    <td>3,100,000 VND</td>
+                    <td>3,000,000</td>
+                    <td class="fail">Vượt</td>
+                </tr>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <footer>
+        <div>© 2026 Quản lý Tài Chính Cá Nhân - by Tan Dung</div>
+    </footer>
+
+</body>
+
+</html>
