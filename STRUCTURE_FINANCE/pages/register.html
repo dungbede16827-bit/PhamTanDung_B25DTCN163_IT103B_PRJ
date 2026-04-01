@@ -7,17 +7,28 @@
     <link rel="stylesheet" href="../css/register.css">
 </head>
 <body>
+    <img src="../assets/images/2ac775bd5067aeac50620b4071349ace249dc22c.png" alt="" class="bg">
     <div class="login">
         <div class="title">
-            <p> Đăng ký tài khoản</p>
+            <p> Sign Up</p>
+            <p class="success">Sign Up Successfully</p>
         </div>
         <div class="input">
             <form>
-            <input type="text" placeholder="Tên tài khoản" required>
-            <input type="password" placeholder="Mật khẩu" required>
-            <input type="password" placeholder="Xác nhận Mật khẩu" required>
-            <button type="submit">Đăng ký</button>
-            <p>Đã có tài khoản?  <a href="login.html">Đăng nhập</a></p>
+                <div class="form-group">
+                    <input type="text" placeholder="email here ..." required>
+                    <p class="err">Please enter your email ...</p>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Password here ..." required>
+                    <p class="err">Please enter your password ...</p>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Confirm password here ..." required>
+                    <p class="err">Please enter your confirm password ...</p>
+                </div>
+            <button type="submit">Sign Up</button>
+            <p>You have account?   <a href="login.html">Sign in</a></p>
         </form>
         </div>
         

@@ -12,12 +12,24 @@ body {
     align-items: center;
     height: 100vh;
 }
+.bg{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    /* ảnh phủ kín toàn bộ nội dung */
+    z-index: -1;
+    /* đẩy phần tử phía ra phía sau màn hình  */
+}
 
 .login {
     background: white;
     padding: 30px;
 
-    width: 320px;
+    width: 448px;
+    height: 284px;
 
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -45,7 +57,7 @@ button {
     width: 100%;
     padding: 10px;
 
-    background-color: #5a4bff;
+    background-color: #4F46E5;
     color: white;
     border: none;
     border-radius: 5px;
@@ -67,4 +79,45 @@ a{
 a:hover{
     text-decoration: underline;
 }
+.success{
+    color: #24A600;
+    font-size: 14px;
+    margin-top: 10px;
+    display: none;
+}
+
+.err{
+    color: #FF0000;
+    font-size: 14px;
+    margin-top: 5px;
+    display: none;
+}
+.form-group{
+    margin-bottom: 15px;
+}
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+.form-group input:focus {
+    border-color: #5a4bff;
+}
+.form-group .err {
+    color: #FF0000;
+    font-size: 14px;
+    margin-top: 5px;
+    display: none;
+}
+.form-group .err.active {
+    display: block;
+}
+.form-group .err.active {
+    display: block;
+}
+
+        
+
 
