@@ -7,36 +7,39 @@
     <link rel="stylesheet" href="../css/history.css" />
   </head>
   <body>
-    <div class="page">
-      <header class="header">
-        <div class="header-box">
-          <div class="header-title">
+    <header class="topbar">
+        <div class="home">
+          <div class="logo">
             <p>📒 Tài Chính Cá Nhân</p>
           </div>
 
           <div class="header-option">
-            <p>Tài khoản</p>
-            <div class="icon-header">
-              <img src="../assets/images/Vector.png" alt="" />
+            <div class="account">
+              <select name="" id="optionHeader" onchange="handleOption()">
+                <option value="">Tài khoản</option>
+                <option value="logout">Đăng xuất</option>
+              </select>
             </div>
           </div>
         </div>
       </header>
 
+    <div class="page">
+
       <div class="taskbar">
         <div class="taskbar-items">
           <img src="../assets/images/Vector (1).png" alt="" />
-          <a href="./index.html">Information</a>
+          <a href="../index.html">Information</a>
         </div>
 
         <div class="taskbar-items">
           <img src="../assets/images/Vector (2).png" alt="" />
-          <a href="">Category</a>
+          <a href="../pages/category.html">Category</a>
         </div>
 
         <div class="taskbar-items">
           <img src="../assets/images/Vector (3).png" alt="" />
-          <a href="">History</a>
+          <a href="../pages/history.html">History</a>
         </div>
       </div>
 
@@ -63,12 +66,15 @@
 
           <div class="section-box">
             <div class="input-row">
-              <input type="text" placeholder="Số tiền" />
-              <input
-                type="text"
-                placeholder="Tên chi tiêu"
-                style="background-color: #efefef"
-              />
+              <input type="number" placeholder="Số tiền" >
+              <select name="" id="" class="" style="background-color: #efefef">
+                <option value="">Danh mục chi tiêu</option>
+                <option value="1">Tiền đi chơi</option>
+                <option value="2">Tiền đi học</option>
+                <option value="3">Tiền cà phê</option>
+                <option value="4">Tiền cho con</option>
+                <option value="5">Tiền ăn</option>
+              </select>
               <input type="text" placeholder="Ghi chú" />
               <button class="btn">Thêm</button>
             </div>
@@ -83,7 +89,7 @@
 
                 <div class="search-box">
                   <input type="text" placeholder="tìm nội dung" />
-                  <button class="search-btn">🔍</button>
+                  <button class="search-btn"><img src="../assets/images/kinhlup.png" alt=""></button>
                 </div>
               </div>
             </div>
@@ -167,5 +173,16 @@
         </div>
       </main>
     </div>
+    <div class="logout-overlay" id="logout-overlay">
+        <div class="logout">
+          <p class="logout-title">Bạn có chắc chắn muốn đăng xuất không?</p>
+
+          <div class="logout-confirm">
+            <button class="confirm-btn" id="confirm-btn">Có</button>
+            <button class="confirm-btn" id="cancel-btn">Không</button>
+          </div>
+        </div>
+      </div>
   </body>
+  <script src="../js/index.js"></script>
 </html>

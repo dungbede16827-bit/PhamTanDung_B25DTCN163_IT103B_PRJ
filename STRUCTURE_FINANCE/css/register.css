@@ -38,9 +38,9 @@ body {
 }
 
 .title p {
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 500;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 
@@ -66,13 +66,11 @@ input::placeholder {
     color: #999; 
 }
 
-.success {
-    display: none; 
+.success{
     color: #24A600;
-    font-size: 13px;
+    font-size: 18px;
     margin-top: 5px;
-    padding-left: 2px;
-
+    display: none;
 }
 .err {
     display: none; 
@@ -81,9 +79,13 @@ input::placeholder {
     margin-top: 5px;
     padding-left: 2px;
 }
+.input-error {
+    border: 1px solid red !important;
+}
 
-
-
+.input-error::placeholder {
+    color: #ff0000;
+}
 
 .form-group.is-error input {
     border-color: #ff0000;

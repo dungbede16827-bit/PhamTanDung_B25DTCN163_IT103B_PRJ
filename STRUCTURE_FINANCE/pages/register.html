@@ -11,27 +11,28 @@
     <div class="login">
         <div class="title">
             <p> Sign Up</p>
-            <p class="success">Sign Up Successfully</p>
+            <p id="success" class="success" style="display: none;">Sign Up Successfully</p>
         </div>
         <div class="input">
-            <form>
+            <form id="registerForm">
                 <div class="form-group">
-                    <input type="text" placeholder="email here ..." required>
-                    <p class="err">Please enter your email ...</p>
+                    <input type="text" id="email" placeholder="email here ..." required>
+                    <p class="err" id="emailError">Please enter your email ...</p>
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder="Password here ..." required>
-                    <p class="err">Please enter your password ...</p>
+                    <input type="password" id="password" placeholder="Password here ..." required>
+                    <p class="err" id="passwordError">Please enter your password ...</p>
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder="Confirm password here ..." required>
-                    <p class="err">Please enter your confirm password ...</p>
+                    <input type="password" id="confirmPassword" placeholder="Confirm password here ..." required>
+                    <p class="err" id="confirmPasswordError">Please enter your confirm password ...</p>
                 </div>
-            <button type="submit">Sign Up</button>
+            <button type="submit" onclick="handleSubmit(event)">Sign Up</button>
             <p>You have account?   <a href="login.html">Sign in</a></p>
         </form>
         </div>
         
     </div>
+    <script src="../js/register.js"></script>
 </body>
 </html>

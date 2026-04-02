@@ -12,12 +12,22 @@
 
     <header class="topbar">
         <div class="home">
-            <div class="logo">📒 Tài Chính Cá Nhân K24_Rikkei</div>
-        <div class="account">
-            <p>Tài Khoản <img src="../assets/images/Vector.png" alt="Account"></p>
+          <div class="logo">
+            <p>📒 Tài Chính Cá Nhân</p>
+          </div>
+
+          <div class="header-option">
+            <div class="account">
+              <select ect name="" id="optionHeader" onchange="handleOption()">
+                <option value="">Tài khoản</option>
+                <option value="logout">Đăng xuất</option>
+              </select>
+            </div>
+          </div>
         </div>
-        </div>
-    </header>
+      </header>
+
+      
 
     <div class="sidebar">
 
@@ -26,12 +36,12 @@
         Information
     </a>
 
-    <a href="" class="menu">
+    <a href="./pages/category.html" class="menu">
         <span class="icon"><img src="../assets/images/Vector (2).png" alt="" /></span>
         Category
     </a>
 
-    <a href="" class="menu">
+    <a href="./pages/history.html" class="menu">
         <span class="icon"><img src="../assets/images/Vector (3).png" alt="" /></span>
         History
     </a>
@@ -99,7 +109,18 @@
     <footer>
         <div>© 2026 Quản lý Tài Chính Cá Nhân - by Tan Dung</div>
     </footer>
+    <div class="logout-overlay" id="logout-overlay">
+        <div class="logout">
+          <p class="logout-title">Bạn có chắc chắn muốn đăng xuất không?</p>
 
+          <div class="logout-confirm">
+            <button class="confirm-btn" id="confirm-btn">Có</button>
+            <button class="confirm-btn" id="cancel-btn">Không</button>
+          </div>
+        </div>
+      </div>
+      
 </body>
+<script src="./js/index.js"></script>
 
 </html>
