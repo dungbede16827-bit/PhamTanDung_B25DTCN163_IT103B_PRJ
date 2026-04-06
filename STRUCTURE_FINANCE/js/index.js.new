@@ -12,24 +12,8 @@ function getCurrentUser() {
   return JSON.parse(localStorage.getItem("currentUser"));
 }
 
-function setActiveTaskbarItem() {
-  const taskbarItems = document.querySelectorAll(".taskbar-items");
-  if (!taskbarItems.length) {
-    return;
-  }
-
-  const currentPath = window.location.pathname;
-
-  taskbarItems.forEach(function (item) {
-    const link = item.querySelector("a");
-    if (!link) {
-      return;
-    }
-
-    const linkPath = new URL(link.getAttribute("href"), window.location.href).pathname;
-    const isActive = linkPath === currentPath;
-    item.classList.toggle("is-active", isActive);
-  });
+function lockBackNavigation() {
+  history.pushState({ protectedPage: true }, "", window.location.href);
 }
 
 function handleOption() {
@@ -40,27 +24,13 @@ function handleOption() {
 
 cancelBtn.addEventListener("click", function () {
   logoutOverlay.style.display = "none";
-  optionHeaderEl.value = ""; // reset lại select
+  optionHeaderEl.value = "";
 });
 
-// Nhấn "Có" → logout
 confirmBtn.addEventListener("click", function () {
   localStorage.removeItem("currentUser");
-
-  // chuyển về login (kiểm tra xem hiện tại đang ở đâu)
   window.location.replace(getLoginPath());
 });
-function lockProtectedHistory() {
-  history.pushState({ protectedPage: true }, "", window.location.href);
-}
-
-function preventBackToAuth() {
-  if (!getCurrentUser()) {
-    return;
-  }
-
-  history.go(1);
-}
 
 function checkAuth() {
   const currentUser = getCurrentUser();
@@ -69,17 +39,14 @@ function checkAuth() {
     return;
   }
 
-  lockProtectedHistory();
+  lockBackNavigation();
 }
 
 window.addEventListener("popstate", function () {
-  if (!getCurrentUser()) {
-    return;
-  }
+  if (!getCurrentUser()) return;
 
-  preventBackToAuth();
+  lockBackNavigation();
 });
 
-window.addEventListener("load", setActiveTaskbarItem);
 window.addEventListener("load", checkAuth);
 window.addEventListener("pageshow", checkAuth);

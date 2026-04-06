@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -8,27 +8,26 @@
   </head>
   <body>
     <header class="topbar">
-        <div class="home">
-          <div class="logo">
-            <p>📒 Tài Chính Cá Nhân</p>
-          </div>
+      <div class="home">
+        <div class="logo">
+          <p>📒 Tài Chính Cá Nhân</p>
+        </div>
 
-          <div class="header-option">
-            <div class="account">
-              <select name="" id="optionHeader" onchange="handleOption()">
-                <option value="">Tài khoản</option>
-                <option value="logout">Đăng xuất</option>
-              </select>
-            </div>
+        <div class="header-option">
+          <div class="account">
+            <select name="" id="optionHeader" onchange="handleOption()">
+              <option value="">Tài khoản</option>
+              <option value="logout">Đăng xuất</option>
+            </select>
           </div>
         </div>
-      </header>
+      </div>
+    </header>
 
     <div class="page">
-
       <div class="taskbar">
         <div class="taskbar-items">
-          <img src="../assets/images/Vector (1).png" alt="" />
+          <img src="../assets/images/rep.svg" alt="" />
           <a href="../index.html">Information</a>
         </div>
 
@@ -38,7 +37,7 @@
         </div>
 
         <div class="taskbar-items">
-          <img src="../assets/images/Vector (3).png" alt="" />
+          <img src="../assets/images/Vector.svg" alt="" />
           <a href="../pages/history.html">History</a>
         </div>
       </div>
@@ -61,7 +60,7 @@
 
           <div class="input-box month-box">
             <label>📅 Chọn tháng:</label>
-            <input type="month" />
+            <input type="month" id="category-month-input" />
           </div>
 
           <div class="container">
@@ -69,114 +68,87 @@
 
             <div class="form">
               <div class="input-group">
-                <input type="text" placeholder="Tên danh mục" />
-                <span class="arrow">▾</span>
+                <select id="category-name-input">
+                  <option value="">Chọn danh mục</option>
+                  <option value="Ăn uống ">Ăn uống </option>
+                  <option value="Mua sắm ">Mua sắm </option>
+                  <option value="Đi lại / Xăng xe ">Đi lại / Xăng xe </option>
+                  <option value="Tiền nhà / Tiền trọ ">Tiền nhà / Tiền trọ </option>
+                  <option value="Hóa đơn điện nước ">Hóa đơn điện nước </option>
+                  <option value="Học tập ">Học tập </option>
+                  <option value="Giải trí ">Giải trí </option>
+                  <option value="Sức khỏe / Y tế ">Sức khỏe / Y tế </option>
+                  <option value="Du lịch ">Du lịch </option>
+                  <option value="Quà tặng / Tiệc tùng ">Quà tặng/Tiệc tùng </option>
+                </select>
               </div>
 
-              <input type="text" placeholder="Giới hạn (VND)" />
+              <input type="number" id="category-limit-input" placeholder="Giới hạn (VND)" min="0" />
 
-              <button class="btn">Thêm danh mục</button>
+              <button class="btn" id="add-category-btn">Thêm danh mục</button>
             </div>
+            <p class="category-message" id="category-message"></p>
 
-            <div class="list">
-              <div class="card">
-                <div class="icon">$</div>
-                <div class="content">
-                  <p class="title">Tiền tích lũy</p>
-                  <p class="price">2.000 $</p>
-                </div>
-                <div class="actions">
-                  <span>✕</span>
-                  <span>✎</span>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="icon">$</div>
-                <div class="content">
-                  <p class="title">Tiền tích lũy</p>
-                  <p class="price">2.000 $</p>
-                </div>
-                <div class="actions">
-                  <span>✕</span>
-                  <span>✎</span>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="icon">$</div>
-                <div class="content">
-                  <p class="title">Tiền tích lũy</p>
-                  <p class="price">2.000 $</p>
-                </div>
-                <div class="actions">
-                  <span>✕</span>
-                  <span>✎</span>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="icon">$</div>
-                <div class="content">
-                  <p class="title">Tiền tích lũy</p>
-                  <p class="price">2.000 $</p>
-                </div>
-                <div class="actions">
-                  <span>✕</span>
-                  <span>✎</span>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="icon">$</div>
-                <div class="content">
-                  <p class="title">Tiền tích lũy</p>
-                  <p class="price">2.000 $</p>
-                </div>
-                <div class="actions">
-                  <span>✕</span>
-                  <span>✎</span>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="icon">$</div>
-                <div class="content">
-                  <p class="title">Tiền tích lũy</p>
-                  <p class="price">2.000 $</p>
-                </div>
-                <div class="actions">
-                  <span>✕</span>
-                  <span>✎</span>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="icon">$</div>
-                <div class="content">
-                  <p class="title">Tiền tích lũy</p>
-                  <p class="price">2.000 $</p>
-                </div>
-                <div class="actions">
-                  <span>✕</span>
-                  <span>✎</span>
-                </div>
-              </div>
-            </div>
+            <div class="list" id="category-list"></div>
           </div>
         </div>
       </main>
     </div>
-    <div class="logout-overlay" id="logout-overlay">
-        <div class="logout">
-          <p class="logout-title">Bạn có chắc chắn muốn đăng xuất không?</p>
 
-          <div class="logout-confirm">
-            <button class="confirm-btn" id="confirm-btn">Có</button>
-            <button class="confirm-btn" id="cancel-btn">Không</button>
-          </div>
+    <div class="logout-overlay" id="logout-overlay">
+      <div class="logout">
+        <p class="logout-title">Bạn có chắc chắn muốn đăng xuất không?</p>
+
+        <div class="logout-confirm">
+          <button class="confirm-btn" id="confirm-btn">Có</button>
+          <button class="confirm-btn" id="cancel-btn">Không</button>
         </div>
       </div>
+    </div>
+    <div class="logout-overlay" id="delete-overlay">
+      <div class="logout">
+        <p class="logout-title">Bạn có chắc chắn muốn xóa không?</p>
+
+        <div class="logout-confirm">
+          <button class="confirm-btn" id="delete-confirm-btn" style="background: red;">Có</button>
+          <button class="confirm-btn" id="delete-cancel-btn">Không</button>
+        </div>
+      </div>
+    </div>
+    <div class="edit-overlay" id="edit-overlay">
+      <div class="edit-modal">
+        <div class="edit-modal-header">
+          <h3 class="edit-modal-title">Sửa danh mục</h3>
+          <button class="edit-close-btn" id="edit-close-btn" type="button">×</button>
+        </div>
+        <div class="edit-form-group">
+          <label for="edit-category-name">Tên danh mục</label>
+          <select id="edit-category-name">
+            <option value="">Chọn danh mục</option>
+            <option value="Ăn uống ">Ăn uống </option>
+            <option value="Mua sắm ">Mua sắm </option>
+            <option value="Đi lại / Xăng xe ">Đi lại / Xăng xe </option>
+            <option value="Tiền nhà / Tiền trọ ">Tiền nhà / Tiền trọ </option>
+            <option value="Hóa đơn điện nước ">Hóa đơn điện nước </option>
+            <option value="Học tập ">Học tập </option>
+            <option value="Giải trí ">Giải trí </option>
+            <option value="Sức khỏe / Y tế ">Sức khỏe / Y tế </option>
+            <option value="Du lịch ">Du lịch </option>
+            <option value="Quà tặng / Tiệc tùng ">Quà tặng/Tiệc tùng </option>
+          </select>
+        </div>
+        <div class="edit-form-group">
+          <label for="edit-category-limit">Giới hạn tiền</label>
+          <input type="number" id="edit-category-limit" placeholder="Nhập giới hạn tiền" min="0" />
+        </div>
+        <p class="edit-message" id="edit-message"></p>
+        <div class="edit-actions">
+          <button class="edit-save-btn" id="edit-save-btn" type="button">Lưu</button>
+          <button class="edit-cancel-btn" id="edit-cancel-btn" type="button">Hủy</button>
+        </div>
+      </div>
+    </div>
   </body>
   <script src="../js/index.js"></script>
+  <script src="../js/category.js"></script>
 </html>

@@ -32,7 +32,7 @@
     <div class="sidebar">
 
     <a href="" class="menu active">
-        <span class="icon"><img src="../assets/images/Vector (1).png" alt="" /></span>
+        <span class="icon"><img src="../assets/images/1.png" alt="" /></span>
         Information
     </a>
 
@@ -42,7 +42,7 @@
     </a>
 
     <a href="./pages/history.html" class="menu">
-        <span class="icon"><img src="../assets/images/Vector (3).png" alt="" /></span>
+        <span class="icon"><img src="./assets/images/Vector.svg" alt="" /></span>
         History
     </a>
 
@@ -63,15 +63,21 @@
             <p class="money">0 VND</p>
         </div>
 
-        <div class="card">
+        <div class="card budget-card">
             <label>📅 Chọn tháng:</label>
-            <input type="month">
+            <input type="month" id="month-input">
         </div>
+        
 
         <div class="card">
             <label>Ngân sách tháng:</label>
-            <input type="number" placeholder="VD: 5000000">
-            <button class="btn blue">Lưu</button>
+            <div class="budget-row">
+                <label class="budget-label">💰 Ngân sách tháng:</label>
+                <input type="number" id="budget-input" placeholder="VD: 5000000" min="0">
+                <button class="btn blue" id="save-budget-btn">Lưu</button>
+            </div>
+            <p class="budget-message" id="budget-message"></p>
+            <button class="btn blue" id="save-budget-btn">Lưu</button>
         </div>
     </div>    
     <div class="personal-info">
@@ -122,5 +128,6 @@
       
 </body>
 <script src="./js/index.js"></script>
+<script src="./js/month-budget.js"></script>
 
 </html>

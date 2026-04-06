@@ -1,3 +1,29 @@
+// let users =  [
+// {
+
+// "id": 1,
+// "fullName": "Nguyễn Văn A",
+// "email": "nguyenvana@gmail.com",
+// "password": "123456",
+// "phone": "0987654321",
+// "gender": true,
+// "status": true
+
+// },
+// {
+
+// "id": 2,
+// "fullName": "Phạm Thị B",
+// "email": "phamthibagmail.com",
+// "password": "123456",
+// "phone": "0987654321",
+// "gender": false,
+// "status": true
+
+// }
+// ];
+// localStorage.setItem("user", JSON.stringify(users));
+
 let users = JSON.parse(localStorage.getItem("user")) || [];
 
 let successMessageEl = document.getElementById("success");
@@ -6,6 +32,14 @@ let passwordEl = document.getElementById("password");
 
 let emailErrorEl = document.getElementById("email-err");
 let passwordErrorEl = document.getElementById("password-err");
+
+function getHomePath() {
+  return "../index.html";
+}
+
+function getCurrentUser() {
+  return JSON.parse(localStorage.getItem("currentUser"));
+}
 
 function showError(input, errorEl, message) {
   errorEl.innerText = message;
@@ -19,12 +53,29 @@ function clearError(input, errorEl) {
 }
 
 function bindFieldClear(input, errorEl) {
-  input.addEventListener("focus", () => clearError(input, errorEl));
-  input.addEventListener("input", () => clearError(input, errorEl));
+  input.addEventListener("focus", function () {
+    clearError(input, errorEl);
+  });
+  input.addEventListener("input", function () {
+    clearError(input, errorEl);
+  });
 }
 
 bindFieldClear(emailEl, emailErrorEl);
 bindFieldClear(passwordEl, passwordErrorEl);
+
+function redirectIfAuthenticated() {
+  if (!getCurrentUser()) {
+    return;
+  }
+
+  window.location.replace(getHomePath());
+}
+
+window.addEventListener("load", redirectIfAuthenticated);
+window.addEventListener("pageshow", function () {
+  redirectIfAuthenticated();
+});
 
 function handle(e) {
   e.preventDefault();
@@ -32,7 +83,9 @@ function handle(e) {
   let emailInput = emailEl.value.trim();
   let passwordInput = passwordEl.value.trim();
 
-  let userByEmail = users.find((u) => u.email === emailInput);
+  let userByEmail = users.find(function (u) {
+    return u.email === emailInput;
+  });
 
   let isValid = true;
 
@@ -44,8 +97,7 @@ function handle(e) {
   if (!emailInput) {
     showError(emailEl, emailErrorEl, "Please enter your email...");
     isValid = false;
-  } 
-  else if (!userByEmail) {
+  } else if (!userByEmail) {
     showError(emailEl, emailErrorEl, "Email does not exist");
     isValid = false;
   }
@@ -54,20 +106,23 @@ function handle(e) {
   if (!passwordInput) {
     showError(passwordEl, passwordErrorEl, "Please enter your password...");
     isValid = false;
-  } 
-  else if (userByEmail && userByEmail.password !== passwordInput) {
+  } else if (userByEmail && userByEmail.password !== passwordInput) {
     showError(passwordEl, passwordErrorEl, "Password is incorrect");
     isValid = false;
   }
 
-  if (!isValid) return;
+  if (!isValid) {
+    return;
+  }
 
   // LOGIN SUCCESS
   localStorage.setItem("currentUser", JSON.stringify(userByEmail));
 
   successMessageEl.style.display = "block";
 
-  setTimeout(() => {
-    window.location.href = "../index.html";
+  setTimeout(function () {
+    window.location.replace(getHomePath());
   }, 1000);
 }
+
+// khi quay lại bằng nút back

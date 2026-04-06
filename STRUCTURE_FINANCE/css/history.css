@@ -193,6 +193,15 @@ input {
     gap: 18px;
     border-radius: 6px;
 }
+.history-message {
+    min-height: 20px;
+    margin-top: 12px;
+    color: #dc2626;
+    font-size: 14px;
+}
+.history-message.success {
+    color: #16a34a;
+}
 
 
 .btn {
@@ -274,10 +283,22 @@ tbody td {
     font-size: 14px;
     font-weight: 400;
 }
+.delete-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
 
 .delete {
     width: 20px;
     height: 20px;
+}
+.empty-history {
+    width: 100%;
+    text-align: center;
+    color: #6b7280;
+    justify-content: center;
 }
 
 .pagination {
@@ -338,17 +359,21 @@ tbody td {
     font-weight: 400;
 }
 
-.taskbar-items:first-child {
+.taskbar-items.is-active {
     background: linear-gradient(90deg, #4f46e5, #4338ca);
     color: white;
 }
 
-.taskbar-items:first-child a {
+.taskbar-items.is-active a {
     color: white;
 }
 
-.taskbar-items:first-child img {
+.taskbar-items.is-active img {
     filter: brightness(0) invert(1);
+}
+
+.taskbar-items:nth-child(1) {
+    border: 2px solid #4f46e5;
 }
 
 .taskbar-items:nth-child(2) {

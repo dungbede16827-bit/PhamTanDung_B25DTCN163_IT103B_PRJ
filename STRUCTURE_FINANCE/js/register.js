@@ -1,3 +1,30 @@
+// let users =  [
+// {
+
+// "id": 1,
+// "fullName": "Nguyễn Văn A",
+// "email": "nguyenvana@gmail.com",
+// "password": "123456",
+// "phone": "0987654321",
+// "gender": true,
+// "status": true
+
+// },
+// {
+
+// "id": 2,
+// "fullName": "Phạm Thị B",
+// "email": "phamthibagmail.com",
+// "password": "123456",
+// "phone": "0987654321",
+// "gender": false,
+// "status": true
+
+// }
+// ];
+// localStorage.setItem("user", JSON.stringify(users));
+
+
 let users = JSON.parse(localStorage.getItem("user")) || [];
 
 // DOM

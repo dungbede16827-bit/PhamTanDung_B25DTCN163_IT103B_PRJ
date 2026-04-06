@@ -109,6 +109,47 @@ body {
     box-shadow:0 4px 10px  rgba(0,0,0,0.15) ;
     text-align: center;
 }
+.card:has(#budget-input) {
+    text-align: center;
+}
+.card:has(.budget-row) > label,
+.card:has(.budget-row) > #save-budget-btn {
+    display: none;
+}
+.budget-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+}
+.budget-label {
+    min-width: 117.62px;
+    font-size: 16px;
+    line-height: 20px;
+    padding: 0;
+    text-align: left;
+}
+.budget-row input {
+    width: 192px;
+    height: 42px;
+    flex: 0 0 192px;
+}
+.budget-row #save-budget-btn {
+    width: 75.7px;
+    height: 40px;
+    padding: 0;
+    flex: 0 0 75.7px;
+}
+.budget-message {
+    min-height: 18px;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #dc2626;
+}
+.budget-message.success {
+    color: #16a34a;
+}
 .row {
     display: flex;
     gap: 10px;
