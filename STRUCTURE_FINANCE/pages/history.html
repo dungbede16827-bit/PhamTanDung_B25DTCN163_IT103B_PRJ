@@ -80,7 +80,11 @@
               <p>📄 Lịch sử giao dịch (theo tháng)</p>
 
               <div class="actions-top">
-                <button class="sort-btn" id="sort-amount-btn">Sắp xếp theo giá</button>
+                <select class="sort-select" id="sort-amount-select">
+                  <option value="default">Mặc định</option>
+                  <option value="desc">Cao đến thấp</option>
+                  <option value="asc">Thấp đến cao</option>
+                </select>
 
                 <div class="search-box">
                   <input type="text" id="history-search-input" placeholder="tìm nội dung" />

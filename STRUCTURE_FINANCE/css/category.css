@@ -355,9 +355,9 @@ h3 {
 
 .taskbar {
     width: 200px;
-    height: 40px;
     position: absolute;
-    margin: 80px 20px;
+    top: 80px;
+    left: 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -367,12 +367,18 @@ h3 {
     display: flex;
     align-items: center;
     gap: 20px;
-    height: 80px;
+    width: 200px;
+    height: 39px;
     padding: 0 25px;
     border-radius: 16px;
     background: #f3f4f6;
-    border: 2px solid transparent;
-    transition: 0.3s;
+    border: 2px solid #4f46e5;
+    transition: 0.2s ease;
+}
+
+.taskbar-items:hover {
+    transform: translateX(4px);
+    box-shadow: 0 14px 26px rgba(75, 67, 208, 0.12);
 }
 
 .taskbar-items img {
@@ -381,7 +387,7 @@ h3 {
 }
 
 .taskbar-items a {
-    padding: 9px;
+    padding: 9px 0;
     text-decoration: none;
     font-size: 14px;
     color: #111827;
@@ -391,6 +397,7 @@ h3 {
 .taskbar-items.is-active {
     background: linear-gradient(90deg, #4f46e5, #4338ca);
     color: white;
+    border-color: transparent;
 }
 
 .taskbar-items.is-active a {
@@ -401,17 +408,6 @@ h3 {
     filter: brightness(0) invert(1);
 }
 
-.taskbar-items:nth-child(1) {
-    border: 2px solid #4f46e5;
-}
-
-.taskbar-items:nth-child(2) {
-    border: 2px solid #4f46e5;
-}
-
-.taskbar-items:nth-child(3) {
-    border: 2px solid #4f46e5;
-}
 .logout-overlay {
     position: fixed;
     top: 0;
@@ -605,5 +601,19 @@ h3 {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@media (max-width: 992px) {
+    .taskbar {
+        position: static;
+        width: calc(100% - 40px);
+        margin: 20px auto 0;
+        top: auto;
+        left: auto;
+    }
+
+    .taskbar-items {
+        justify-content: center;
     }
 }

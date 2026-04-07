@@ -3,35 +3,42 @@ let confirmBtn = document.getElementById("confirm-btn");
 let cancelBtn = document.getElementById("cancel-btn");
 let logoutOverlay = document.getElementById("logout-overlay");
 
+// Xac dinh duong dan login theo vi tri hien tai cua file.
 function getLoginPath() {
   const currentPath = window.location.pathname;
   return currentPath.includes("/pages/") ? "./login.html" : "./pages/login.html";
 }
 
+// Lay user dang dang nhap de kiem tra auth.
 function getCurrentUser() {
   return JSON.parse(localStorage.getItem("currentUser"));
 }
 
+// Day 1 state moi vao history de han che back ve trang auth.
 function lockBackNavigation() {
   history.pushState({ protectedPage: true }, "", window.location.href);
 }
 
+// Khi user chon logout trong select thi mo overlay xac nhan.
 function handleOption() {
   if (optionHeaderEl.value === "logout") {
     logoutOverlay.style.display = "flex";
   }
 }
 
+// Dong overlay va reset lai gia tri select.
 cancelBtn.addEventListener("click", function () {
   logoutOverlay.style.display = "none";
   optionHeaderEl.value = "";
 });
 
+// Xoa currentUser de logout roi dieu huong ve login.
 confirmBtn.addEventListener("click", function () {
   localStorage.removeItem("currentUser");
   window.location.replace(getLoginPath());
 });
 
+// Neu chua dang nhap thi quay ve login, neu da dang nhap thi khoa history.
 function checkAuth() {
   const currentUser = getCurrentUser();
   if (!currentUser) {
@@ -42,6 +49,7 @@ function checkAuth() {
   lockBackNavigation();
 }
 
+// Chan user back ve trang login khi session van con.
 window.addEventListener("popstate", function () {
   if (!getCurrentUser()) return;
 

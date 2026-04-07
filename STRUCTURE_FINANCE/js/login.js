@@ -26,6 +26,7 @@
 
 let users = JSON.parse(localStorage.getItem("user")) || [];
 
+// Cache cac phan tu giao dien cua form dang nhap.
 let successMessageEl = document.getElementById("success");
 let emailEl = document.getElementById("email");
 let passwordEl = document.getElementById("password");
@@ -33,25 +34,30 @@ let passwordEl = document.getElementById("password");
 let emailErrorEl = document.getElementById("email-err");
 let passwordErrorEl = document.getElementById("password-err");
 
+// Xac dinh duong dan ve trang chinh sau khi login thanh cong.
 function getHomePath() {
   return "../index.html";
 }
 
+// Lay user dang dang nhap; neu da co thi khong cho quay lai trang login.
 function getCurrentUser() {
   return JSON.parse(localStorage.getItem("currentUser"));
 }
 
+// Hien loi cho tung truong input.
 function showError(input, errorEl, message) {
   errorEl.innerText = message;
   errorEl.style.display = "block";
   input.classList.add("input-error");
 }
 
+// Xoa loi khi user nhap lai.
 function clearError(input, errorEl) {
   errorEl.style.display = "none";
   input.classList.remove("input-error");
 }
 
+// Gan su kien de clear loi ngay khi user thao tac lai voi field.
 function bindFieldClear(input, errorEl) {
   input.addEventListener("focus", function () {
     clearError(input, errorEl);
@@ -64,6 +70,7 @@ function bindFieldClear(input, errorEl) {
 bindFieldClear(emailEl, emailErrorEl);
 bindFieldClear(passwordEl, passwordErrorEl);
 
+// Neu da login roi thi chuyen thang ve trang chu.
 function redirectIfAuthenticated() {
   if (!getCurrentUser()) {
     return;
@@ -77,6 +84,7 @@ window.addEventListener("pageshow", function () {
   redirectIfAuthenticated();
 });
 
+// Validate email / password va tao currentUser khi dang nhap thanh cong.
 function handle(e) {
   e.preventDefault();
 
@@ -89,11 +97,11 @@ function handle(e) {
 
   let isValid = true;
 
-  // RESET
-  clearError(emailEl, emailErrorEl);
+  // Reset loi cu truoc khi validate.
+  clearError(emailEl,emailErrorEl);
   clearError(passwordEl, passwordErrorEl);
 
-  // EMAIL
+  // Kiem tra email co duoc nhap va co ton tai trong danh sach user khong.
   if (!emailInput) {
     showError(emailEl, emailErrorEl, "Please enter your email...");
     isValid = false;
@@ -102,7 +110,7 @@ function handle(e) {
     isValid = false;
   }
 
-  // PASSWORD
+  // Kiem tra password rong hoac sai voi email da nhap.
   if (!passwordInput) {
     showError(passwordEl, passwordErrorEl, "Please enter your password...");
     isValid = false;
@@ -115,7 +123,7 @@ function handle(e) {
     return;
   }
 
-  // LOGIN SUCCESS
+  // Dang nhap thanh cong thi luu currentUser de cac trang khac su dung.
   localStorage.setItem("currentUser", JSON.stringify(userByEmail));
 
   successMessageEl.style.display = "block";

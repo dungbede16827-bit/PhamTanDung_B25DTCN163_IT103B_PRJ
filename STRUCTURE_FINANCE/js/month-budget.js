@@ -1,20 +1,24 @@
 ﻿const monthInputEl = document.getElementById("month-input");
 const budgetInputEl = document.getElementById("budget-input");
+// Cache cac phan tu giao dien cua form ngan sach thang.
 const saveBudgetBtn = document.getElementById("save-budget-btn");
 const budgetMessageEl = document.getElementById("budget-message");
 const remainingMoneyEl = document.querySelector(".money");
 
 let isBudgetFormInitialized = false;
 
+// Lay user dang dang nhap de tach du lieu ngan sach theo tung tai khoan.
 function getCurrentUserForBudget() {
   return JSON.parse(localStorage.getItem("currentUser"));
 }
 
+// Tao khoa rieng cho tung user khi luu du lieu.
 function getBudgetUserKey() {
   const currentUser = getCurrentUserForBudget();
   return currentUser?.email || currentUser?.id || currentUser?.username || "guest";
 }
 
+// Cac key duoc tao dong theo user.
 function getSelectedMonthKey() {
   return `selectedMonth_${getBudgetUserKey()}`;
 }
@@ -31,6 +35,7 @@ function getTransactionStorageKey() {
   return `transactions_${getBudgetUserKey()}`;
 }
 
+// Tra ve thang hien tai theo dinh dang YYYY-MM.
 function getDefaultMonth() {
   const today = new Date();
   const year = today.getFullYear();
@@ -38,6 +43,7 @@ function getDefaultMonth() {
   return `${year}-${month}`;
 }
 
+// Doc / ghi du lieu ngan sach va so tien con lai.
 function getSavedBudgets() {
   return JSON.parse(localStorage.getItem(getMonthlyBudgetKey())) || {};
 }
@@ -54,10 +60,12 @@ function saveRemainingMoney(remainingMoneyByMonth) {
   localStorage.setItem(getRemainingMoneyKey(), JSON.stringify(remainingMoneyByMonth));
 }
 
+// Dinh dang so tien theo giao dien tien VND.
 function formatCurrencyVND(amount) {
   return `${Number(amount || 0).toLocaleString("vi-VN")} VND`;
 }
 
+// Hien thong bao loi khi luu ngan sach that bai.
 function showBudgetWarning(message) {
   if (!budgetMessageEl) {
     return;
@@ -67,6 +75,7 @@ function showBudgetWarning(message) {
   budgetMessageEl.classList.remove("success");
 }
 
+// Hien thong bao thanh cong va xoa class loi.
 function showBudgetSuccess(message) {
   if (!budgetMessageEl) {
     return;
@@ -77,6 +86,7 @@ function showBudgetSuccess(message) {
   budgetInputEl.classList.remove("input-error");
 }
 
+// Xoa thong bao cu moi khi user nhap lai.
 function clearBudgetMessage() {
   if (!budgetMessageEl) {
     return;
@@ -87,6 +97,7 @@ function clearBudgetMessage() {
   budgetInputEl.classList.remove("input-error");
 }
 
+// Cap nhat o "so tien con lai" theo thang dang chon.
 function updateRemainingMoney(month) {
   if (!remainingMoneyEl) {
     return;
@@ -100,6 +111,7 @@ function updateRemainingMoney(month) {
   remainingMoneyEl.textContent = formatCurrencyVND(remainingMoney);
 }
 
+// Nap ngan sach cua thang dang chon len input.
 function loadBudgetByMonth(month) {
   const budgets = getSavedBudgets();
   budgetInputEl.value = budgets[month] || "";
@@ -107,10 +119,12 @@ function loadBudgetByMonth(month) {
   updateRemainingMoney(month);
 }
 
+// Luu thang dang chon de cac trang khac dung chung.
 function saveSelectedMonth(month) {
   localStorage.setItem(getSelectedMonthKey(), month);
 }
 
+// Khi doi thang thi nap lai ngan sach va so tien con lai cua thang do.
 function handleMonthChange() {
   const selectedMonth = monthInputEl.value || getDefaultMonth();
   monthInputEl.value = selectedMonth;
@@ -118,6 +132,7 @@ function handleMonthChange() {
   loadBudgetByMonth(selectedMonth);
 }
 
+// Validate va luu ngan sach thang vao localStorage.
 function handleBudgetSave() {
   const selectedMonth = monthInputEl.value;
   const budgetValue = budgetInputEl.value.trim();
@@ -142,6 +157,7 @@ function handleBudgetSave() {
     return;
   }
 
+  // Moi lan dat ngan sach moi thi reset so tien con lai = ngan sach moi.
   const budgets = getSavedBudgets();
   budgets[selectedMonth] = budgetNumber;
   const remainingMoneyByMonth = getSavedRemainingMoney();
@@ -155,6 +171,7 @@ function handleBudgetSave() {
   showBudgetSuccess("Đã lưu ngân sách thành công");
 }
 
+// Khoi tao form ngan sach 1 lan va gan event.
 function initializeMonthBudget() {
   if (
     isBudgetFormInitialized ||

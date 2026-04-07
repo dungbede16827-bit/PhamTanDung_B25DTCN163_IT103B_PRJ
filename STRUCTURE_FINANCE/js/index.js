@@ -1,3 +1,10 @@
+// =========================
+// 1. KHAI BAO BIEN DOM
+// =========================
+// Doan nay lay san cac phan tu HTML tu trang de dung lai nhieu lan.
+// Neu khong luu vao bien, moi lan can dung ta lai phai query lai DOM.
+// Cach nay giup code gon hon va de doc hon.
+// Cache cac the HTML se dung nhieu lan trong file.
 let optionHeaderEl = document.getElementById("optionHeader");
 let confirmBtn = document.getElementById("confirm-btn");
 let cancelBtn = document.getElementById("cancel-btn");
@@ -30,21 +37,36 @@ let confirmNewPasswordInputEl = document.getElementById("confirm-new-password");
 let oldPasswordErrorEl = document.getElementById("old-password-error");
 let newPasswordErrorEl = document.getElementById("new-password-error");
 let confirmNewPasswordErrorEl = document.getElementById("confirm-new-password-error");
+// Luu tam du lieu profile sau khi user sua.
 let data = null;
 
+// =========================
+// 2. CAC HAM DOC DU LIEU CO BAN
+// =========================
+// Xac dinh duong dan login theo vi tri file hien tai.
 function getLoginPath() {
   const currentPath = window.location.pathname;
   return currentPath.includes("/pages/") ? "./login.html" : "./pages/login.html";
 }
 
+// Doc thong tin user dang dang nhap.
+// localStorage chi luu du lieu duoi dang chuoi,
+// nen phai dung JSON.parse(...) de doi ve object JavaScript.
 function getCurrentUser() {
   return JSON.parse(localStorage.getItem("currentUser"));
 }
 
+// Doc danh sach user da luu; neu chua co thi tra ve mang rong.
+// Toan tu || [] o day co nghia la:
+// neu ve trai la null / undefined / false thi lay gia tri ben phai la [].
 function getUsers() {
   return JSON.parse(localStorage.getItem("user")) || [];
 }
 
+// =========================
+// 3. CAC HAM HIEN THI / XOA LOI
+// =========================
+// Hien thi message loi va gan class loi cho input.
 function showError(input, errorEl, message) {
   if (!input || !errorEl) {
     return;
@@ -55,6 +77,7 @@ function showError(input, errorEl, message) {
   input.classList.add("input-error");
 }
 
+// Xoa message loi va tra input ve trang thai binh thuong.
 function clearError(input, errorEl) {
   if (!input || !errorEl) {
     return;
@@ -64,6 +87,10 @@ function clearError(input, errorEl) {
   input.classList.remove("input-error");
 }
 
+// Khi user thao tac lai voi input thi an loi di.
+// focus: vua click vao o input
+// input: dang go chu
+// change: doi gia tri xong va roi khoi input / select
 function bindFieldClear(input, errorEl) {
   if (!input || !errorEl) {
     return;
@@ -82,6 +109,11 @@ function bindFieldClear(input, errorEl) {
   });
 }
 
+// =========================
+// 4. CHUAN HOA DU LIEU
+// =========================
+// Chuyen nhieu kieu du lieu gioi tinh ve 3 gia tri hien thi thong nhat.
+// Muc dich: du lieu cu co the khong dong nhat, nhung giao dien select chi can 3 gia tri co dinh.
 function normalizeGender(gender) {
   if (gender === true || gender === "true") {
     return "Male";
@@ -108,6 +140,10 @@ function normalizeGender(gender) {
   return "Male";
 }
 
+// =========================
+// 5. DO DU LIEU LEN GIAO DIEN
+// =========================
+// Do du lieu tu currentUser len form profile o trang chinh.
 function fillProfileForm() {
   const currentUser = getCurrentUser();
 
@@ -115,12 +151,15 @@ function fillProfileForm() {
     return;
   }
 
+  // Lay gia tri hop le dau tien trong chuoi so sanh:
+  // fullName -> name -> chuoi rong.
   nameInputEl.value = currentUser.fullName || currentUser.name || "";
   emailInputEl.value = currentUser.email || "";
   phoneInputEl.value = currentUser.phone || "";
   genderSelectEl.value = normalizeGender(currentUser.gender);
 }
 
+// Sao chep du lieu hien tai vao modal de user chinh sua.
 function fillChangeInfoModal() {
   const currentUser = getCurrentUser();
 
@@ -128,6 +167,8 @@ function fillChangeInfoModal() {
     return;
   }
 
+  // Optional chaining ?. tranh loi neu currentUser khong ton tai.
+  // Toan tu || giup lay gia tri hop le dau tien.
   const currentName =
     currentUser?.fullName ||
     currentUser?.name ||
@@ -152,6 +193,11 @@ function fillChangeInfoModal() {
   modalGenderSelectEl.value = currentGender;
 }
 
+// =========================
+// 6. VALIDATE FORM
+// =========================
+// Kiem tra cac truong bat buoc trong form sua thong tin.
+// Bien isValid ban dau la true, gap loi o dau thi chuyen thanh false.
 function validateChangeInfoForm() {
   let isValid = true;
 
@@ -183,6 +229,8 @@ function validateChangeInfoForm() {
   return isValid;
 }
 
+// Moi lan mo modal doi mat khau thi reset du lieu cu va loi cu.
+// Muc dich la tranh truong hop user mo lai modal nhung van thay du lieu lan truoc.
 function resetChangePasswordForm() {
   if (!changePasswordFormEl) {
     return;
@@ -194,6 +242,8 @@ function resetChangePasswordForm() {
   clearError(confirmNewPasswordInputEl, confirmNewPasswordErrorEl);
 }
 
+// Kiem tra mat khau cu dung khong va xac nhan mat khau moi co khop khong.
+// Neu co bat ky dieu kien nao sai thi showError va tra ve false.
 function validateChangePasswordForm() {
   const currentUser = getCurrentUser();
   let isValid = true;
@@ -234,8 +284,14 @@ function validateChangePasswordForm() {
   return isValid;
 }
 
+// =========================
+// 7. TAO OBJECT USER MOI TU DU LIEU FORM
+// =========================
+// Gom du lieu tu modal thanh object user moi.
 function getProfileFormData() {
   return {
+    // ...object cu nghia la copy toan bo thuoc tinh cu cua user hien tai.
+    // Sau do cac dong ben duoi se ghi de len nhung truong can cap nhat.
     ...getCurrentUser(),
     name: modalNameInputEl.value.trim(),
     fullName: modalNameInputEl.value.trim(),
@@ -245,6 +301,10 @@ function getProfileFormData() {
   };
 }
 
+// =========================
+// 8. LUU PROFILE / PASSWORD VAO localStorage
+// =========================
+// Cap nhat thong tin user trong localStorage va dong bo lai giao dien.
 function saveProfileData() {
   const currentUser = getCurrentUser();
 
@@ -254,9 +314,14 @@ function saveProfileData() {
   }
 
   data = getProfileFormData();
+  // Gan len window de co the debug tren console neu can.
   window.data = data;
 
   const users = getUsers();
+  // findIndex(...) se tim vi tri cua user can sua trong mang users.
+  // Neu tim thay => tra ve index >= 0
+  // Neu khong tim thay => tra ve -1
+  // Uu tien tim theo id; neu du lieu cu khong co id thi tim theo email.
   const userIndex = users.findIndex(function (user) {
     if (currentUser.id != null && user.id != null) {
       return user.id === currentUser.id;
@@ -266,14 +331,21 @@ function saveProfileData() {
   });
 
   if (userIndex >= 0) {
+    // Tim thay user cu thi ghi de du lieu moi len dung vi tri cu trong mang.
     users[userIndex] = {
+      // Giu lai du lieu cu cua user.
       ...users[userIndex],
+      // Ghi de cac truong user vua sua.
       ...data
     };
   } else {
+    // Neu khong tim thay thi them moi de tranh mat du lieu.
     users.push(data);
   }
 
+  // Sau khi cap nhat mang users xong, ghi nguoc lai vao localStorage.
+  // user: danh sach tat ca tai khoan
+  // currentUser: tai khoan dang dang nhap
   localStorage.setItem("user", JSON.stringify(users));
   localStorage.setItem("currentUser", JSON.stringify(data));
 
@@ -281,6 +353,8 @@ function saveProfileData() {
   closeChangeInfoModal();
 }
 
+// Chi cap nhat truong password cho user hien tai.
+// Logic tuong tu saveProfileData nhung pham vi update nho hon.
 function savePasswordData() {
   const currentUser = getCurrentUser();
 
@@ -291,10 +365,12 @@ function savePasswordData() {
 
   const updatedUser = {
     ...currentUser,
+    // Password moi duoc lay truc tiep tu input sau khi da validate.
     password: newPasswordInputEl.value.trim()
   };
 
   const users = getUsers();
+  // Dung cung cach tim user nhu luc sua profile de tranh lech du lieu.
   const userIndex = users.findIndex(function (user) {
     if (currentUser.id != null && user.id != null) {
       return user.id === currentUser.id;
@@ -304,11 +380,13 @@ function savePasswordData() {
   });
 
   if (userIndex >= 0) {
+    // Chi thay doi password, giu nguyen cac truong khac cua user cu.
     users[userIndex] = {
       ...users[userIndex],
       password: updatedUser.password
     };
   } else {
+    // Truong hop hiem: user chua ton tai trong mang thi day ca object moi vao.
     users.push(updatedUser);
   }
 
@@ -317,6 +395,10 @@ function savePasswordData() {
   closeChangePasswordModal();
 }
 
+// =========================
+// 9. DIEU KHIEN MODAL
+// =========================
+// Nhom ham dieu khien viec mo / dong 2 modal.
 function openChangeInfoModal() {
   if (!changeInfoModalEl) {
     return;
@@ -351,6 +433,10 @@ function closeChangePasswordModal() {
   changePasswordModalEl.style.display = "none";
 }
 
+// =========================
+// 10. CAC HAM XU LY SU KIEN
+// =========================
+// Tach handler rieng ra de phan gan su kien de doc hon.
 function handleChangeInformation() {
   openChangeInfoModal();
 }
@@ -360,6 +446,8 @@ function handleChangePassword() {
 }
 
 function handleChangeInfoSubmit(event) {
+  // Chan hanh vi submit mac dinh cua form de trang khong bi reload.
+  // Neu khong co dong nay, trinh duyet se reload trang khi bam Save.
   event.preventDefault();
 
   if (!validateChangeInfoForm()) {
@@ -370,6 +458,7 @@ function handleChangeInfoSubmit(event) {
 }
 
 function handleChangePasswordSubmit(event) {
+  // Chan hanh vi submit mac dinh cua form de tu xu ly bang JavaScript.
   event.preventDefault();
 
   if (!validateChangePasswordForm()) {
@@ -379,6 +468,10 @@ function handleChangePasswordSubmit(event) {
   savePasswordData();
 }
 
+// =========================
+// 11. DANH DAU TASKBAR DANG ACTIVE
+// =========================
+// Danh dau muc taskbar trung voi trang dang mo de user biet vi tri hien tai.
 function setActiveTaskbarItem() {
   const taskbarItems = document.querySelectorAll(".taskbar-items");
   if (!taskbarItems.length) {
@@ -388,39 +481,56 @@ function setActiveTaskbarItem() {
   const currentPath = window.location.pathname;
 
   taskbarItems.forEach(function (item) {
+    // Moi item chua 1 the a, can lay link ben trong de so sanh voi URL hien tai.
     const link = item.querySelector("a");
     if (!link) {
       return;
     }
 
+    // Chuyen href tuong doi thanh pathname tuyet doi de so sanh cho chinh xac.
     const linkPath = new URL(link.getAttribute("href"), window.location.href).pathname;
     const isActive = linkPath === currentPath;
+    // classList.toggle("is-active", isActive) co nghia la:
+    // - isActive = true  => them class is-active
+    // - isActive = false => xoa class is-active
     item.classList.toggle("is-active", isActive);
   });
 }
 
+// =========================
+// 12. XU LY LOGOUT
+// =========================
+// Neu user chon logout trong select thi hien hop thoai xac nhan.
 function handleOption() {
   if (optionHeaderEl.value === "logout") {
     logoutOverlay.style.display = "flex";
   }
 }
 
+// Nut Cancel trong overlay chi dong hop thoai va khong logout.
 cancelBtn.addEventListener("click", function () {
   logoutOverlay.style.display = "none";
   optionHeaderEl.value = ""; // reset lại select
 });
 
 // Nhấn "Có" → logout
+// Khi dong y logout, xoa session dang nhap va quay lai login.
 confirmBtn.addEventListener("click", function () {
   localStorage.removeItem("currentUser");
 
   // chuyển về login (kiểm tra xem hiện tại đang ở đâu)
   window.location.replace(getLoginPath());
 });
+// =========================
+// 13. AUTH + CHAN NUT BACK
+// =========================
+// Day them 1 state vao history de han che viec back ve trang auth sau login.
 function lockProtectedHistory() {
   history.pushState({ protectedPage: true }, "", window.location.href);
 }
 
+// Neu van con dang nhap thi day trinh duyet tien toi de chan nut Back.
+// history.go(1) nghia la di toi 1 muc phia truoc trong lich su trinh duyet.
 function preventBackToAuth() {
   if (!getCurrentUser()) {
     return;
@@ -429,6 +539,7 @@ function preventBackToAuth() {
   history.go(1);
 }
 
+// Bao ve trang hien tai: chua login thi quay ve login, da login thi khoa history.
 function checkAuth() {
   const currentUser = getCurrentUser();
   if (!currentUser) {
@@ -439,19 +550,26 @@ function checkAuth() {
   lockProtectedHistory();
 }
 
+// Lang nghe su kien Back / Forward cua trinh duyet.
 window.addEventListener("popstate", function () {
   if (!getCurrentUser()) {
     return;
   }
 
+  // Neu user van dang login ma bam Back thi day lai 1 buoc tien toi.
   preventBackToAuth();
 });
 
+// =========================
+// 14. DIEM BAT DAU CHAY CHUONG TRINH
+// =========================
+// Khoi tao du lieu va auth moi lan trang hien thi.
 window.addEventListener("load", fillProfileForm);
 window.addEventListener("load", setActiveTaskbarItem);
 window.addEventListener("load", checkAuth);
 window.addEventListener("pageshow", checkAuth);
 
+// Gan hanh vi clear loi cho tat ca field trong modal.
 bindFieldClear(modalNameInputEl, modalNameErrorEl);
 bindFieldClear(modalEmailInputEl, modalEmailErrorEl);
 bindFieldClear(modalPhoneInputEl, modalPhoneErrorEl);
@@ -460,19 +578,27 @@ bindFieldClear(oldPasswordInputEl, oldPasswordErrorEl);
 bindFieldClear(newPasswordInputEl, newPasswordErrorEl);
 bindFieldClear(confirmNewPasswordInputEl, confirmNewPasswordErrorEl);
 
+// =========================
+// 15. GAN CAC SU KIEN
+// =========================
+// Chi gan event neu phan tu ton tai, tranh loi khi bo cuc thay doi.
 if (changeInfoBtn) {
+  // Mo modal sua thong tin khi user bam nut Change Information.
   changeInfoBtn.addEventListener("click", handleChangeInformation);
 }
 
 if (changePasswordBtn) {
+  // Mo modal doi mat khau khi user bam nut Change Password.
   changePasswordBtn.addEventListener("click", handleChangePassword);
 }
 
 if (changeInfoFormEl) {
+  // Xu ly luu thong tin khi submit form trong modal.
   changeInfoFormEl.addEventListener("submit", handleChangeInfoSubmit);
 }
 
 if (changePasswordFormEl) {
+  // Xu ly doi mat khau khi submit form trong modal.
   changePasswordFormEl.addEventListener("submit", handleChangePasswordSubmit);
 }
 
@@ -494,6 +620,7 @@ if (cancelPasswordBtn) {
 
 if (changeInfoModalEl) {
   changeInfoModalEl.addEventListener("click", function (event) {
+    // Chi dong khi click vao lop nen, khong dong khi click vao noi dung modal.
     if (event.target === changeInfoModalEl) {
       closeChangeInfoModal();
     }
@@ -502,6 +629,7 @@ if (changeInfoModalEl) {
 
 if (changePasswordModalEl) {
   changePasswordModalEl.addEventListener("click", function (event) {
+    // Chi dong khi click vao lop nen, khong dong khi click vao noi dung modal.
     if (event.target === changePasswordModalEl) {
       closeChangePasswordModal();
     }

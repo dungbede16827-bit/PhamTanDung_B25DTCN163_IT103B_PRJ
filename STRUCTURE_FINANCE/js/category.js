@@ -1,5 +1,6 @@
 ﻿const categoryMonthInputEl = document.getElementById("category-month-input");
 const categoryNameInputEl = document.getElementById("category-name-input");
+// Cache cac phan tu giao dien cua trang danh muc.
 const categoryLimitInputEl = document.getElementById("category-limit-input");
 const addCategoryBtn = document.getElementById("add-category-btn");
 const categoryMessageEl = document.getElementById("category-message");
@@ -20,15 +21,18 @@ let isCategoryPageInitialized = false;
 let pendingCategoryDeleteId = null;
 let editingCategoryId = null;
 
+// Lay user dang dang nhap de tach du lieu theo tung tai khoan.
 function getCurrentUserForCategory() {
   return JSON.parse(localStorage.getItem("currentUser"));
 }
 
+// Tao khoa rieng cho tung user khi luu vao localStorage.
 function getCategoryUserKey() {
   const currentUser = getCurrentUserForCategory();
   return currentUser?.email || currentUser?.id || currentUser?.username || "guest";
 }
 
+// Cac key duoc tao dong theo user de tranh trung du lieu.
 function getCategoryStorageKey() {
   return `categories_${getCategoryUserKey()}`;
 }
@@ -49,6 +53,7 @@ function getSelectedMonthStorageKeyForCategory() {
   return `selectedMonth_${getCategoryUserKey()}`;
 }
 
+// Tra ve thang hien tai theo dinh dang YYYY-MM.
 function getDefaultMonthForCategory() {
   const today = new Date();
   const year = today.getFullYear();
@@ -56,10 +61,12 @@ function getDefaultMonthForCategory() {
   return `${year}-${month}`;
 }
 
+// Dinh dang so tien de hien thi len giao dien.
 function formatCurrencyVND(amount) {
   return `${Number(amount || 0).toLocaleString("vi-VN")} VND`;
 }
 
+// Doc / ghi danh muc va giao dich tu localStorage.
 function getStoredCategories() {
   return JSON.parse(localStorage.getItem(getCategoryStorageKey())) || {};
 }
@@ -78,6 +85,7 @@ function getStoredTransactions() {
   return JSON.parse(localStorage.getItem(getTransactionStorageKey())) || {};
 }
 
+// Ho tro doc ca du lieu cu dang mang va du lieu moi dang object theo thang.
 function getTransactionsByMonth(month) {
   const storedTransactions = getStoredTransactions();
 
@@ -98,6 +106,7 @@ function saveStoredTransactions(transactionsByMonth) {
   localStorage.setItem(getTransactionStorageKey(), JSON.stringify(transactionsByMonth));
 }
 
+// Doc ngan sach thang va so tien con lai cua user.
 function getMonthlyBudgetsForCategory() {
   return JSON.parse(localStorage.getItem(getBudgetStorageKeyForCategory())) || {};
 }
@@ -106,6 +115,7 @@ function getRemainingMoneyForCategory() {
   return JSON.parse(localStorage.getItem(getRemainingMoneyStorageKeyForCategory())) || {};
 }
 
+// Hien thong bao o form them danh muc.
 function showCategoryMessage(message, isSuccess) {
   categoryMessageEl.textContent = message;
   categoryMessageEl.classList.toggle("success", Boolean(isSuccess));
@@ -120,6 +130,7 @@ function clearCategoryMessage() {
   categoryLimitInputEl.classList.remove("input-error");
 }
 
+// Hien thong bao trong modal sua danh muc.
 function showEditMessage(message, isSuccess) {
   editMessageEl.textContent = message;
   editMessageEl.classList.toggle("success", Boolean(isSuccess));
@@ -129,6 +140,7 @@ function clearEditMessage() {
   showEditMessage("", false);
 }
 
+// Reset form them danh muc sau khi them / sua xong.
 function resetCategoryForm() {
   editingCategoryId = null;
   categoryNameInputEl.value = "";
@@ -136,10 +148,12 @@ function resetCategoryForm() {
   addCategoryBtn.textContent = "Thêm danh mục";
 }
 
+// Luu thang dang xem de cac trang dung chung 1 moc thoi gian.
 function saveSelectedMonthForCategory(month) {
   localStorage.setItem(getSelectedMonthStorageKeyForCategory(), month);
 }
 
+// Reset du lieu cua modal sua.
 function resetEditForm() {
   editingCategoryId = null;
   editCategoryNameEl.value = "";
@@ -147,15 +161,39 @@ function resetEditForm() {
   clearEditMessage();
 }
 
+// Chon dung option trong select bat ke khac hoa / thuong.
+// Neu khong tim thay thi tao tam 1 option de van hien duoc gia tri cu.
 function setSelectValueByNormalizedText(selectEl, value) {
   const normalizedValue = (value || "").trim().toLowerCase();
   const matchingOption = Array.from(selectEl.options).find(function (option) {
     return option.value.trim().toLowerCase() === normalizedValue;
   });
 
-  selectEl.value = matchingOption ? matchingOption.value : "";
+  if (matchingOption) {
+    selectEl.value = matchingOption.value;
+    return;
+  }
+
+  if (!normalizedValue) {
+    selectEl.value = "";
+    return;
+  }
+
+  const fallbackOption = document.createElement("option");
+  fallbackOption.value = value;
+  fallbackOption.textContent = value;
+  fallbackOption.dataset.dynamicOption = "true";
+
+  const existingDynamicOption = selectEl.querySelector("option[data-dynamic-option='true']");
+  if (existingDynamicOption) {
+    existingDynamicOption.remove();
+  }
+
+  selectEl.appendChild(fallbackOption);
+  selectEl.value = fallbackOption.value;
 }
 
+// Mo modal sua va do du lieu danh muc hien tai vao form.
 function openEditOverlay(category) {
   editingCategoryId = category.id;
   addCategoryBtn.textContent = "Thêm danh mục";
@@ -165,11 +203,13 @@ function openEditOverlay(category) {
   editOverlayEl.style.display = "flex";
 }
 
+// Dong modal sua va xoa state sua tam thoi.
 function closeEditOverlay() {
   editOverlayEl.style.display = "none";
   resetEditForm();
 }
 
+// Tinh tong da chi cua 1 danh muc trong thang hien tai.
 function getSpentAmountByCategory(month, categoryName) {
   const transactions = getTransactionsByMonth(month);
 
@@ -183,6 +223,7 @@ function getSpentAmountByCategory(month, categoryName) {
   }, 0);
 }
 
+// Neu doi ten danh muc thi dong bo ten moi sang cac giao dich cu.
 function renameCategoryInTransactions(month, oldCategoryName, newCategoryName) {
   if (!oldCategoryName || oldCategoryName === newCategoryName) {
     return;
@@ -212,6 +253,7 @@ function renameCategoryInTransactions(month, oldCategoryName, newCategoryName) {
   saveStoredTransactions(transactionsByMonth);
 }
 
+// Cap nhat o "so tien con lai" tren giao dien category.
 function updateMoneyLeft(month) {
   if (!moneyLeftValueEl) {
     return;
@@ -230,6 +272,7 @@ function updateMoneyLeft(month) {
   moneyLeftValueEl.textContent = formatCurrencyVND(remainingMoney);
 }
 
+// Tao HTML cho 1 card danh muc.
 function createCategoryCard(category, month) {
   const spentAmount = getSpentAmountByCategory(month, category.name);
   const limitText = Number(category.limit || 0) > 0
@@ -251,6 +294,7 @@ function createCategoryCard(category, month) {
   `;
 }
 
+// Render danh sach danh muc theo thang dang chon.
 function renderCategoryList() {
   const selectedMonth = categoryMonthInputEl.value || getDefaultMonthForCategory();
   const categories = getCategoriesByMonth(selectedMonth);
@@ -289,6 +333,7 @@ function renderCategoryList() {
   updateMoneyLeft(selectedMonth);
 }
 
+// Khi doi thang, reset form / modal va nap lai danh muc cua thang moi.
 function handleMonthChangeForCategory() {
   const selectedMonthValue = categoryMonthInputEl.value || getDefaultMonthForCategory();
   categoryMonthInputEl.value = selectedMonthValue;
@@ -313,6 +358,7 @@ function handleMonthChangeForCategory() {
   renderCategoryList();
 }
 
+// Validate du lieu va them moi hoac cap nhat danh muc ngay tren form chinh.
 function handleAddCategory() {
   const selectedMonth = categoryMonthInputEl.value;
   const categoryName = categoryNameInputEl.value.trim();
@@ -340,6 +386,7 @@ function handleAddCategory() {
 
   const categoriesByMonth = getStoredCategories();
   const categories = categoriesByMonth[selectedMonth] || [];
+  // Khong cho 2 danh muc trung ten trong cung 1 thang.
   const isDuplicate = categories.some(function (category) {
     const sameName = category.name.trim().toLowerCase() === categoryName.toLowerCase();
     const isDifferentCategory = category.id !== editingCategoryId;
@@ -358,6 +405,7 @@ function handleAddCategory() {
     return;
   }
 
+  // Neu dang sua thi cap nhat ban ghi cu, nguoc lai thi them moi.
   if (editingCategoryId) {
     categoriesByMonth[selectedMonth] = categories.map(function (category) {
       if (category.id !== editingCategoryId) {
@@ -393,6 +441,7 @@ function handleAddCategory() {
   renderCategoryList();
 }
 
+// Phan biet click nut sua va nut xoa trong danh sach danh muc.
 function handleCategoryListClick(event) {
   const editButton = event.target.closest("[data-action='edit']");
   if (editButton) {
@@ -420,11 +469,13 @@ function handleCategoryListClick(event) {
   deleteOverlayEl.style.display = "flex";
 }
 
+// Dong hop thoai xoa va xoa trang thai tam.
 function closeDeleteOverlay() {
   pendingCategoryDeleteId = null;
   deleteOverlayEl.style.display = "none";
 }
 
+// Luu thay doi trong modal sua danh muc.
 function handleEditSave() {
   const selectedMonth = categoryMonthInputEl.value || getDefaultMonthForCategory();
   const categoryName = editCategoryNameEl.value.trim();
@@ -458,6 +509,7 @@ function handleEditSave() {
   }
 
   const previousCategoryName = currentCategory.name;
+  // Kiem tra trung ten de tranh xung dot danh muc trong cung thang.
   const isDuplicate = categories.some(function (category) {
     const sameName = category.name.trim().toLowerCase() === categoryName.toLowerCase();
     const isDifferentCategory = category.id !== editingCategoryId;
@@ -489,6 +541,7 @@ function handleEditSave() {
   renderCategoryList();
 }
 
+// Xoa danh muc da chon khoi thang hien tai.
 function confirmDeleteCategory() {
   if (!pendingCategoryDeleteId) {
     return;
@@ -508,6 +561,7 @@ function confirmDeleteCategory() {
   renderCategoryList();
 }
 
+// Khoi tao trang category 1 lan va gan toan bo event can thiet.
 function initializeCategoryPage() {
   if (
     isCategoryPageInitialized ||

@@ -1,12 +1,13 @@
 ﻿const historyMonthInputEl = document.getElementById("history-month-input");
 const historyAmountInputEl = document.getElementById("history-amount-input");
+// Cache cac phan tu giao dien cua trang lich su chi tieu.
 const historyCategorySelectEl = document.getElementById("history-category-select");
 const historyNoteInputEl = document.getElementById("history-note-input");
 const addTransactionBtn = document.getElementById("add-transaction-btn");
 const historyMessageEl = document.getElementById("history-message");
 const historyTableBodyEl = document.getElementById("history-table-body");
 const historyEmptyStateEl = document.getElementById("history-empty-state");
-const sortAmountBtn = document.getElementById("sort-amount-btn");
+const sortAmountSelectEl = document.getElementById("sort-amount-select");
 const historySearchInputEl = document.getElementById("history-search-input");
 const historySearchBtn = document.querySelector(".search-btn");
 const moneyLeftValueEl = document.querySelector(".money-left-value");
@@ -15,21 +16,23 @@ const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
 const deleteCancelBtn = document.getElementById("delete-cancel-btn");
 
 let isHistoryInitialized = false;
-let isSortDescending = true;
 let pendingTransactionDeleteId = null;
 let activeHistoryKeyword = "";
 let currentHistoryPage = 1;
 const HISTORY_ITEMS_PER_PAGE = 5;
 
+// Lay user dang dang nhap de tach du lieu theo tung tai khoan.
 function getCurrentUserForHistory() {
   return JSON.parse(localStorage.getItem("currentUser"));
 }
 
+// Tao khoa rieng cho moi user, tranh ghi de du lieu cua nhau.
 function getHistoryUserKey() {
   const currentUser = getCurrentUserForHistory();
   return currentUser?.email || currentUser?.id || currentUser?.username || "guest";
 }
 
+// Cac key duoc tao dong theo user de luu du lieu trong localStorage.
 function getHistorySelectedMonthKey() {
   return `selectedMonth_${getHistoryUserKey()}`;
 }
@@ -50,6 +53,7 @@ function getHistoryRemainingMoneyKey() {
   return `remainingMoney_${getHistoryUserKey()}`;
 }
 
+// Tra ve thang hien tai theo dinh dang YYYY-MM.
 function getDefaultHistoryMonth() {
   const today = new Date();
   const year = today.getFullYear();
@@ -57,10 +61,12 @@ function getDefaultHistoryMonth() {
   return `${year}-${month}`;
 }
 
+// Dinh dang so tien theo giao dien tien VND.
 function formatHistoryCurrency(amount) {
   return `${Number(amount || 0).toLocaleString("vi-VN")} VND`;
 }
 
+// Doc / ghi du lieu giao dich va so tien con lai.
 function getStoredTransactionsForHistory() {
   return JSON.parse(localStorage.getItem(getHistoryTransactionsKey())) || {};
 }
@@ -78,7 +84,7 @@ function saveStoredRemainingMoneyForHistory(remainingMoneyByMonth) {
 }
 
 function getTransactionsForMonth(month) {
-
+  // He thong hien tai luu giao dich theo tung thang trong 1 object.
   const transactionsByMonth = getStoredTransactionsForHistory();
 
   if (Array.isArray(transactionsByMonth[month])) {
@@ -88,6 +94,7 @@ function getTransactionsForMonth(month) {
   return [];
 }
 
+// Lay danh sach danh muc da tao trong thang de do vao select.
 function getStoredCategoriesForHistory() {
   return JSON.parse(localStorage.getItem(getHistoryCategoriesKey())) || {};
 }
@@ -101,6 +108,8 @@ function getStoredBudgetsForHistory() {
   return JSON.parse(localStorage.getItem(getHistoryBudgetsKey())) || {};
 }
 
+// Neu da co remainingMoney thi uu tien dung gia tri do,
+// neu chua thi lay ngan sach goc cua thang.
 function getRemainingMoneyForMonth(month) {
   const remainingMoneyByMonth = getStoredRemainingMoneyForHistory();
 
@@ -111,10 +120,12 @@ function getRemainingMoneyForMonth(month) {
   return Number(getStoredBudgetsForHistory()[month] || 0);
 }
 
+// Luu thang dang xem de khi tai lai trang van giu nguyen bo loc.
 function saveSelectedHistoryMonth(month) {
   localStorage.setItem(getHistorySelectedMonthKey(), month);
 }
 
+// Hien message thanh cong / loi va reset vien do khi can.
 function showHistoryMessage(message, isSuccess) {
   historyMessageEl.textContent = message;
   historyMessageEl.classList.toggle("success", Boolean(isSuccess));
@@ -134,6 +145,7 @@ function clearHistoryMessage() {
   historySearchInputEl.classList.remove("input-error");
 }
 
+// Dong bo class loi tren cac input truoc khi validate.
 function syncHistoryInputErrorState() {
   if (!historyAmountInputEl.value.trim()) {
     historyAmountInputEl.classList.add("input-error");
@@ -150,6 +162,7 @@ function syncHistoryInputErrorState() {
   historyNoteInputEl.classList.remove("input-error");
 }
 
+// Cap nhat o "so tien con lai" tren giao dien.
 function updateRemainingMoneyForHistory(month) {
   if (!moneyLeftValueEl) {
     return;
@@ -158,6 +171,7 @@ function updateRemainingMoneyForHistory(month) {
   moneyLeftValueEl.textContent = formatHistoryCurrency(getRemainingMoneyForMonth(month));
 }
 
+// Render lai danh sach option danh muc theo thang dang chon.
 function renderCategoryOptions() {
   const selectedMonth = historyMonthInputEl.value || getDefaultHistoryMonth();
   const categories = getCategoriesForMonth(selectedMonth);
@@ -177,8 +191,10 @@ function renderCategoryOptions() {
   }
 }
 
+// Loc theo tu khoa va sap xep theo so tien truoc khi phan trang.
 function buildFilteredTransactions(month) {
   const keyword = activeHistoryKeyword;
+  const sortDirection = sortAmountSelectEl?.value || "default";
   let transactions = getTransactionsForMonth(month).slice();
 
   if (keyword) {
@@ -189,15 +205,18 @@ function buildFilteredTransactions(month) {
     });
   }
 
-  transactions.sort(function (a, b) {
-    return isSortDescending
-      ? Number(b.amount || 0) - Number(a.amount || 0)
-      : Number(a.amount || 0) - Number(b.amount || 0);
-  });
+  if (sortDirection !== "default") {
+    transactions.sort(function (a, b) {
+      return sortDirection === "desc"
+        ? Number(b.amount || 0) - Number(a.amount || 0)
+        : Number(a.amount || 0) - Number(b.amount || 0);
+    });
+  }
 
   return transactions;
 }
 
+// Ve cac nut phan trang.
 function renderHistoryPagination(totalItems) {
   const totalPages = Math.ceil(totalItems / HISTORY_ITEMS_PER_PAGE);
 
@@ -235,6 +254,7 @@ function renderHistoryPagination(totalItems) {
   historyEmptyStateEl.innerHTML = paginationButtons.join("");
 }
 
+// Search tren category va note, sau do render lai bang tu trang 1.
 function handleSearchClick() {
   const keyword = historySearchInputEl.value.trim().toLowerCase();
 
@@ -254,6 +274,7 @@ function handleSearchClick() {
   renderHistoryTable();
 }
 
+// Render bang lich su theo bo loc hien tai.
 function renderHistoryTable() {
   const selectedMonth = historyMonthInputEl.value || getDefaultHistoryMonth();
   const transactions = buildFilteredTransactions(selectedMonth);
@@ -296,12 +317,14 @@ function renderHistoryTable() {
   updateRemainingMoneyForHistory(selectedMonth);
 }
 
+// Reset form them giao dich sau khi luu thanh cong.
 function resetHistoryForm() {
   historyAmountInputEl.value = "";
   historyCategorySelectEl.value = "";
   historyNoteInputEl.value = "";
 }
 
+// Khi doi thang, reset cac bo loc va nap du lieu cua thang moi.
 function handleHistoryMonthChange() {
   const selectedMonth = historyMonthInputEl.value || getDefaultHistoryMonth();
   historyMonthInputEl.value = selectedMonth;
@@ -314,6 +337,7 @@ function handleHistoryMonthChange() {
   renderHistoryTable();
 }
 
+// Validate du lieu va them 1 giao dich moi vao thang hien tai.
 function handleAddTransaction() {
   const selectedMonth = historyMonthInputEl.value;
   const amountValue = historyAmountInputEl.value.trim();
@@ -351,6 +375,7 @@ function handleAddTransaction() {
   const remainingMoneyByMonth = getStoredRemainingMoneyForHistory();
   const currentRemainingMoney = getRemainingMoneyForMonth(selectedMonth);
 
+  // Khong cho chi vuot qua so tien con lai cua thang.
   if (amountNumber > currentRemainingMoney) {
     showHistoryMessage(
       `Giao dịch vượt quá số tiền chi tiêu còn lại (${formatHistoryCurrency(currentRemainingMoney)})`,
@@ -360,6 +385,7 @@ function handleAddTransaction() {
     return;
   }
 
+  // Moi giao dich luu id rieng de phuc vu xoa sau nay.
   transactions.push({
     id: `${Date.now()}`,
     amount: amountNumber,
@@ -368,6 +394,7 @@ function handleAddTransaction() {
     month: selectedMonth,
   });
 
+  // Sau khi them giao dich, tru so tien con lai cua thang.
   transactionsByMonth[selectedMonth] = transactions;
   saveStoredTransactionsForHistory(transactionsByMonth);
   remainingMoneyByMonth[selectedMonth] = currentRemainingMoney - amountNumber;
@@ -380,6 +407,7 @@ function handleAddTransaction() {
   renderHistoryTable();
 }
 
+// Bat click nut xoa trong bang va mo overlay xac nhan.
 function handleHistoryTableClick(event) {
   const deleteButton = event.target.closest("[data-id]");
   if (!deleteButton) {
@@ -390,11 +418,13 @@ function handleHistoryTableClick(event) {
   deleteOverlayEl.style.display = "flex";
 }
 
+// Dong hop thoai xoa va xoa trang thai tam.
 function closeDeleteOverlay() {
   pendingTransactionDeleteId = null;
   deleteOverlayEl.style.display = "none";
 }
 
+// Xoa giao dich da chon va cong tien tro lai cho thang do.
 function confirmDeleteTransaction() {
   if (!pendingTransactionDeleteId) {
     return;
@@ -427,6 +457,7 @@ function confirmDeleteTransaction() {
   renderHistoryTable();
 }
 
+// Chuyen trang khi user bam cac nut pagination.
 function handleHistoryPaginationClick(event) {
   const paginationButton = event.target.closest("[data-page]");
 
@@ -438,6 +469,7 @@ function handleHistoryPaginationClick(event) {
   renderHistoryTable();
 }
 
+// Khoi tao trang 1 lan: set thang, render du lieu, gan event.
 function initializeHistoryPage() {
   if (
     isHistoryInitialized ||
@@ -449,7 +481,7 @@ function initializeHistoryPage() {
     !historyMessageEl ||
     !historyTableBodyEl ||
     !historyEmptyStateEl ||
-    !sortAmountBtn ||
+    !sortAmountSelectEl ||
     !historySearchInputEl ||
     !historySearchBtn
   ) {
@@ -460,6 +492,7 @@ function initializeHistoryPage() {
 
   const savedMonth = localStorage.getItem(getHistorySelectedMonthKey()) || getDefaultHistoryMonth();
   historyMonthInputEl.value = savedMonth;
+  sortAmountSelectEl.value = "default";
 
   activeHistoryKeyword = "";
   renderCategoryOptions();
@@ -475,6 +508,10 @@ function initializeHistoryPage() {
   historyTableBodyEl.addEventListener("click", handleHistoryTableClick);
   historyEmptyStateEl.addEventListener("click", handleHistoryPaginationClick);
   historySearchBtn.addEventListener("click", handleSearchClick);
+  sortAmountSelectEl.addEventListener("change", function () {
+    currentHistoryPage = 1;
+    renderHistoryTable();
+  });
   historySearchInputEl.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -483,10 +520,6 @@ function initializeHistoryPage() {
   });
   deleteConfirmBtn.addEventListener("click", confirmDeleteTransaction);
   deleteCancelBtn.addEventListener("click", closeDeleteOverlay);
-  sortAmountBtn.addEventListener("click", function () {
-    isSortDescending = !isSortDescending;
-    renderHistoryTable();
-  });
 }
 
 window.addEventListener("load", initializeHistoryPage);

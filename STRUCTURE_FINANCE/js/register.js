@@ -27,7 +27,7 @@
 
 let users = JSON.parse(localStorage.getItem("user")) || [];
 
-// DOM
+// Cache cac phan tu giao dien cua form dang ky.
 const emailEl = document.getElementById('email');
 const passwordEl = document.getElementById('password');
 const confirmPasswordEl = document.getElementById('confirmPassword');
@@ -37,7 +37,7 @@ const passwordErr = document.getElementById('passwordError');
 const confirmPasswordErr = document.getElementById('confirmPasswordError');
 const successEl = document.getElementById('success');
 const registerForm = document.getElementById('registerForm');
-// Regex
+// Regex kiem tra email co dung dinh dang co ban hay khong.
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Hàm hiển thị lỗi
@@ -53,6 +53,7 @@ function clearError(input, errorEl) {
   input.classList.remove("input-error");
 }
 
+// Khi user nhap lai thi an loi cua truong do.
 function bindFieldClear(input, errorEl) {
   input.addEventListener("focus", () => clearError(input, errorEl));
   input.addEventListener("input", () => clearError(input, errorEl));
@@ -62,6 +63,7 @@ bindFieldClear(emailEl, emailErr);
 bindFieldClear(passwordEl, passwordErr);
 bindFieldClear(confirmPasswordEl, confirmPasswordErr);
 
+// Xu ly toan bo luong dang ky.
 function handleSubmit(e) {
   e.preventDefault();
 
@@ -71,25 +73,25 @@ function handleSubmit(e) {
 
   let isValid = true;
 
-  // RESET ERROR
+  // Reset loi cu truoc moi lan validate.
   clearError(emailEl, emailErr);
   clearError(passwordEl, passwordErr);
   clearError(confirmPasswordEl, confirmPasswordErr);
 
-  // EMAIL
+  // Kiem tra email rong hoac sai dinh dang.
   if (!emailValue || !emailRegex.test(emailValue)) {
     showError(emailEl, emailErr, "Please enter your email ...");
     isValid = false;
   }
 
-  // CHECK EMAIL EXIST
+  // Khong cho tao 2 tai khoan cung 1 email.
   const isExist = users.some((user) => user.email === emailValue);
   if (isExist) {
     showError(emailEl, emailErr, "Email đã tồn tại");
     isValid = false;
   }
 
-  // PASSWORD
+  // Mat khau bat buoc va toi thieu 6 ky tu.
   if (!passwordValue) {
     showError(passwordEl, passwordErr, "Password is required");
     isValid = false;
@@ -98,7 +100,7 @@ function handleSubmit(e) {
     isValid = false;
   }
 
-  // CONFIRM PASSWORD
+  // Confirm password phai trung voi password da nhap.
   if (!confirmPasswordValue || passwordValue !== confirmPasswordValue) {
     showError(confirmPasswordEl, confirmPasswordErr, "Password not match");
     isValid = false;
@@ -106,7 +108,7 @@ function handleSubmit(e) {
 
   if (!isValid) return;
 
-  // SAVE USER
+  // Luu tai khoan moi vao localStorage.
   const newUser = {
     email: emailValue,
     password: passwordValue
@@ -119,10 +121,10 @@ function handleSubmit(e) {
     successEl.style.display = "block";
   }
 
-  // RESET FORM
+  // Xoa du lieu form sau khi dang ky thanh cong.
   document.getElementById("registerForm").reset();
 
-  // Redirect after 1s so user can see success message
+  // Tre 1 giay de user kip thay thong bao thanh cong roi moi chuyen trang.
   setTimeout(() => {
     window.location.href = "login.html";
   }, 1000);
