@@ -122,6 +122,28 @@ input {
     padding: 12px 9px;
 }
 
+input.input-error {
+    border: 1px solid #dc2626;
+    background-color: #fef2f2;
+    color: #991b1b;
+}
+
+select.input-error {
+    border: 1px solid #dc2626;
+    background-color: #fef2f2 !important;
+    color: #991b1b;
+}
+
+input.input-error:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+select.input-error:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
 
 .money-left {
     height: 104px;
@@ -314,6 +336,11 @@ tbody td {
     padding: 6px 10px;
     border-radius: 6px;
     cursor: pointer;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 

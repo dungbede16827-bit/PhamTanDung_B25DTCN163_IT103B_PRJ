@@ -1,4 +1,4 @@
-const historyMonthInputEl = document.getElementById("history-month-input");
+﻿const historyMonthInputEl = document.getElementById("history-month-input");
 const historyAmountInputEl = document.getElementById("history-amount-input");
 const historyCategorySelectEl = document.getElementById("history-category-select");
 const historyNoteInputEl = document.getElementById("history-note-input");
@@ -8,6 +8,7 @@ const historyTableBodyEl = document.getElementById("history-table-body");
 const historyEmptyStateEl = document.getElementById("history-empty-state");
 const sortAmountBtn = document.getElementById("sort-amount-btn");
 const historySearchInputEl = document.getElementById("history-search-input");
+const historySearchBtn = document.querySelector(".search-btn");
 const moneyLeftValueEl = document.querySelector(".money-left-value");
 const deleteOverlayEl = document.getElementById("delete-overlay");
 const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
@@ -16,6 +17,9 @@ const deleteCancelBtn = document.getElementById("delete-cancel-btn");
 let isHistoryInitialized = false;
 let isSortDescending = true;
 let pendingTransactionDeleteId = null;
+let activeHistoryKeyword = "";
+let currentHistoryPage = 1;
+const HISTORY_ITEMS_PER_PAGE = 5;
 
 function getCurrentUserForHistory() {
   return JSON.parse(localStorage.getItem("currentUser"));
@@ -74,6 +78,7 @@ function saveStoredRemainingMoneyForHistory(remainingMoneyByMonth) {
 }
 
 function getTransactionsForMonth(month) {
+
   const transactionsByMonth = getStoredTransactionsForHistory();
 
   if (Array.isArray(transactionsByMonth[month])) {
@@ -96,6 +101,16 @@ function getStoredBudgetsForHistory() {
   return JSON.parse(localStorage.getItem(getHistoryBudgetsKey())) || {};
 }
 
+function getRemainingMoneyForMonth(month) {
+  const remainingMoneyByMonth = getStoredRemainingMoneyForHistory();
+
+  if (remainingMoneyByMonth[month] !== undefined) {
+    return Number(remainingMoneyByMonth[month] || 0);
+  }
+
+  return Number(getStoredBudgetsForHistory()[month] || 0);
+}
+
 function saveSelectedHistoryMonth(month) {
   localStorage.setItem(getHistorySelectedMonthKey(), month);
 }
@@ -103,10 +118,36 @@ function saveSelectedHistoryMonth(month) {
 function showHistoryMessage(message, isSuccess) {
   historyMessageEl.textContent = message;
   historyMessageEl.classList.toggle("success", Boolean(isSuccess));
+  if (isSuccess) {
+    historyAmountInputEl.classList.remove("input-error");
+    historyCategorySelectEl.classList.remove("input-error");
+    historyNoteInputEl.classList.remove("input-error");
+    historySearchInputEl.classList.remove("input-error");
+  }
 }
 
 function clearHistoryMessage() {
   showHistoryMessage("", false);
+  historyAmountInputEl.classList.remove("input-error");
+  historyCategorySelectEl.classList.remove("input-error");
+  historyNoteInputEl.classList.remove("input-error");
+  historySearchInputEl.classList.remove("input-error");
+}
+
+function syncHistoryInputErrorState() {
+  if (!historyAmountInputEl.value.trim()) {
+    historyAmountInputEl.classList.add("input-error");
+  } else {
+    historyAmountInputEl.classList.remove("input-error");
+  }
+
+  if (!historyCategorySelectEl.value) {
+    historyCategorySelectEl.classList.add("input-error");
+  } else {
+    historyCategorySelectEl.classList.remove("input-error");
+  }
+
+  historyNoteInputEl.classList.remove("input-error");
 }
 
 function updateRemainingMoneyForHistory(month) {
@@ -114,16 +155,7 @@ function updateRemainingMoneyForHistory(month) {
     return;
   }
 
-  const remainingMoneyByMonth = getStoredRemainingMoneyForHistory();
-  const monthlyBudget = Number(getStoredBudgetsForHistory()[month] || 0);
-  const remainingMoney =
-    remainingMoneyByMonth[month] !== undefined
-      ? Number(remainingMoneyByMonth[month] || 0)
-      : monthlyBudget - getTransactionsForMonth(month).reduce(function (sum, transaction) {
-          return sum + Number(transaction.amount || 0);
-        }, 0);
-
-  moneyLeftValueEl.textContent = formatHistoryCurrency(remainingMoney);
+  moneyLeftValueEl.textContent = formatHistoryCurrency(getRemainingMoneyForMonth(month));
 }
 
 function renderCategoryOptions() {
@@ -146,7 +178,7 @@ function renderCategoryOptions() {
 }
 
 function buildFilteredTransactions(month) {
-  const keyword = historySearchInputEl.value.trim().toLowerCase();
+  const keyword = activeHistoryKeyword;
   let transactions = getTransactionsForMonth(month).slice();
 
   if (keyword) {
@@ -166,6 +198,62 @@ function buildFilteredTransactions(month) {
   return transactions;
 }
 
+function renderHistoryPagination(totalItems) {
+  const totalPages = Math.ceil(totalItems / HISTORY_ITEMS_PER_PAGE);
+
+  if (totalPages <= 1) {
+    historyEmptyStateEl.innerHTML = "";
+    return;
+  }
+
+  if (currentHistoryPage > totalPages) {
+    currentHistoryPage = totalPages;
+  }
+
+  const paginationButtons = [];
+
+  paginationButtons.push(`
+    <button type="button" data-page="${currentHistoryPage - 1}" ${currentHistoryPage === 1 ? "disabled" : ""}>
+      &lt;&lt;
+    </button>
+  `);
+
+  for (let page = 1; page <= totalPages; page += 1) {
+    paginationButtons.push(`
+      <button type="button" data-page="${page}" class="${page === currentHistoryPage ? "active" : ""}">
+        ${page}
+      </button>
+    `);
+  }
+
+  paginationButtons.push(`
+    <button type="button" data-page="${currentHistoryPage + 1}" ${currentHistoryPage === totalPages ? "disabled" : ""}>
+      &gt;&gt;
+    </button>
+  `);
+
+  historyEmptyStateEl.innerHTML = paginationButtons.join("");
+}
+
+function handleSearchClick() {
+  const keyword = historySearchInputEl.value.trim().toLowerCase();
+
+  if (keyword) {
+    activeHistoryKeyword = keyword;
+    currentHistoryPage = 1;
+    historySearchInputEl.classList.remove("input-error");
+    clearHistoryMessage();
+    renderHistoryTable();
+    return;
+  }
+
+  activeHistoryKeyword = "";
+  currentHistoryPage = 1;
+  historySearchInputEl.classList.remove("input-error");
+  clearHistoryMessage();
+  renderHistoryTable();
+}
+
 function renderHistoryTable() {
   const selectedMonth = historyMonthInputEl.value || getDefaultHistoryMonth();
   const transactions = buildFilteredTransactions(selectedMonth);
@@ -177,12 +265,20 @@ function renderHistoryTable() {
     return;
   }
 
-  historyEmptyStateEl.innerHTML = "";
-  historyTableBodyEl.innerHTML = transactions
+  const totalPages = Math.ceil(transactions.length / HISTORY_ITEMS_PER_PAGE);
+
+  if (currentHistoryPage > totalPages) {
+    currentHistoryPage = totalPages;
+  }
+
+  const startIndex = (currentHistoryPage - 1) * HISTORY_ITEMS_PER_PAGE;
+  const paginatedTransactions = transactions.slice(startIndex, startIndex + HISTORY_ITEMS_PER_PAGE);
+
+  historyTableBodyEl.innerHTML = paginatedTransactions
     .map(function (transaction, index) {
       return `
         <tr>
-          <td>${index + 1}</td>
+          <td>${startIndex + index + 1}</td>
           <td>${transaction.category}</td>
           <td>${formatHistoryCurrency(transaction.amount)}</td>
           <td>${transaction.note || ""}</td>
@@ -196,6 +292,7 @@ function renderHistoryTable() {
     })
     .join("");
 
+  renderHistoryPagination(transactions.length);
   updateRemainingMoneyForHistory(selectedMonth);
 }
 
@@ -209,6 +306,9 @@ function handleHistoryMonthChange() {
   const selectedMonth = historyMonthInputEl.value || getDefaultHistoryMonth();
   historyMonthInputEl.value = selectedMonth;
   saveSelectedHistoryMonth(selectedMonth);
+  activeHistoryKeyword = "";
+  currentHistoryPage = 1;
+  historySearchInputEl.value = "";
   clearHistoryMessage();
   renderCategoryOptions();
   renderHistoryTable();
@@ -219,6 +319,7 @@ function handleAddTransaction() {
   const amountValue = historyAmountInputEl.value.trim();
   const categoryValue = historyCategorySelectEl.value;
   const noteValue = historyNoteInputEl.value.trim();
+  syncHistoryInputErrorState();
 
   if (!selectedMonth) {
     showHistoryMessage("Vui lòng chọn tháng chi tiêu", false);
@@ -248,10 +349,16 @@ function handleAddTransaction() {
   const transactionsByMonth = getStoredTransactionsForHistory();
   const transactions = transactionsByMonth[selectedMonth] || [];
   const remainingMoneyByMonth = getStoredRemainingMoneyForHistory();
-  const currentRemainingMoney =
-    remainingMoneyByMonth[selectedMonth] !== undefined
-      ? Number(remainingMoneyByMonth[selectedMonth] || 0)
-      : Number(getStoredBudgetsForHistory()[selectedMonth] || 0);
+  const currentRemainingMoney = getRemainingMoneyForMonth(selectedMonth);
+
+  if (amountNumber > currentRemainingMoney) {
+    showHistoryMessage(
+      `Giao dịch vượt quá số tiền chi tiêu còn lại (${formatHistoryCurrency(currentRemainingMoney)})`,
+      false
+    );
+    historyAmountInputEl.focus();
+    return;
+  }
 
   transactions.push({
     id: `${Date.now()}`,
@@ -268,6 +375,7 @@ function handleAddTransaction() {
   saveSelectedHistoryMonth(selectedMonth);
 
   resetHistoryForm();
+  currentHistoryPage = 1;
   showHistoryMessage("Đã thêm khoản chi tiêu thành công", true);
   renderHistoryTable();
 }
@@ -305,10 +413,7 @@ function confirmDeleteTransaction() {
   }
 
   const remainingMoneyByMonth = getStoredRemainingMoneyForHistory();
-  const currentRemainingMoney =
-    remainingMoneyByMonth[selectedMonth] !== undefined
-      ? Number(remainingMoneyByMonth[selectedMonth] || 0)
-      : Number(getStoredBudgetsForHistory()[selectedMonth] || 0);
+  const currentRemainingMoney = getRemainingMoneyForMonth(selectedMonth);
 
   transactionsByMonth[selectedMonth] = transactions.filter(function (transaction) {
     return transaction.id !== pendingTransactionDeleteId;
@@ -319,6 +424,17 @@ function confirmDeleteTransaction() {
   saveStoredRemainingMoneyForHistory(remainingMoneyByMonth);
   closeDeleteOverlay();
   showHistoryMessage("Đã xóa khoản chi tiêu", true);
+  renderHistoryTable();
+}
+
+function handleHistoryPaginationClick(event) {
+  const paginationButton = event.target.closest("[data-page]");
+
+  if (!paginationButton || paginationButton.disabled) {
+    return;
+  }
+
+  currentHistoryPage = Number(paginationButton.dataset.page || 1);
   renderHistoryTable();
 }
 
@@ -334,7 +450,8 @@ function initializeHistoryPage() {
     !historyTableBodyEl ||
     !historyEmptyStateEl ||
     !sortAmountBtn ||
-    !historySearchInputEl
+    !historySearchInputEl ||
+    !historySearchBtn
   ) {
     return;
   }
@@ -344,6 +461,7 @@ function initializeHistoryPage() {
   const savedMonth = localStorage.getItem(getHistorySelectedMonthKey()) || getDefaultHistoryMonth();
   historyMonthInputEl.value = savedMonth;
 
+  activeHistoryKeyword = "";
   renderCategoryOptions();
   renderHistoryTable();
 
@@ -351,9 +469,18 @@ function initializeHistoryPage() {
   historyAmountInputEl.addEventListener("input", clearHistoryMessage);
   historyCategorySelectEl.addEventListener("change", clearHistoryMessage);
   historyNoteInputEl.addEventListener("input", clearHistoryMessage);
+  historySearchInputEl.addEventListener("input", clearHistoryMessage);
+  addTransactionBtn.addEventListener("click", syncHistoryInputErrorState);
   addTransactionBtn.addEventListener("click", handleAddTransaction);
   historyTableBodyEl.addEventListener("click", handleHistoryTableClick);
-  historySearchInputEl.addEventListener("input", renderHistoryTable);
+  historyEmptyStateEl.addEventListener("click", handleHistoryPaginationClick);
+  historySearchBtn.addEventListener("click", handleSearchClick);
+  historySearchInputEl.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSearchClick();
+    }
+  });
   deleteConfirmBtn.addEventListener("click", confirmDeleteTransaction);
   deleteCancelBtn.addEventListener("click", closeDeleteOverlay);
   sortAmountBtn.addEventListener("click", function () {

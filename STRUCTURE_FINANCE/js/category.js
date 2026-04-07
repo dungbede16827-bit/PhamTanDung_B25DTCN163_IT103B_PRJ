@@ -1,4 +1,4 @@
-const categoryMonthInputEl = document.getElementById("category-month-input");
+﻿const categoryMonthInputEl = document.getElementById("category-month-input");
 const categoryNameInputEl = document.getElementById("category-name-input");
 const categoryLimitInputEl = document.getElementById("category-limit-input");
 const addCategoryBtn = document.getElementById("add-category-btn");
@@ -69,6 +69,7 @@ function saveStoredCategories(categoriesByMonth) {
 }
 
 function getCategoriesByMonth(month) {
+
   const categoriesByMonth = getStoredCategories();
   return categoriesByMonth[month] || [];
 }
@@ -93,6 +94,10 @@ function getTransactionsByMonth(month) {
   return [];
 }
 
+function saveStoredTransactions(transactionsByMonth) {
+  localStorage.setItem(getTransactionStorageKey(), JSON.stringify(transactionsByMonth));
+}
+
 function getMonthlyBudgetsForCategory() {
   return JSON.parse(localStorage.getItem(getBudgetStorageKeyForCategory())) || {};
 }
@@ -104,10 +109,15 @@ function getRemainingMoneyForCategory() {
 function showCategoryMessage(message, isSuccess) {
   categoryMessageEl.textContent = message;
   categoryMessageEl.classList.toggle("success", Boolean(isSuccess));
+
+  if (isSuccess) {
+    categoryLimitInputEl.classList.remove("input-error");
+  }
 }
 
 function clearCategoryMessage() {
   showCategoryMessage("", false);
+  categoryLimitInputEl.classList.remove("input-error");
 }
 
 function showEditMessage(message, isSuccess) {
@@ -137,10 +147,19 @@ function resetEditForm() {
   clearEditMessage();
 }
 
+function setSelectValueByNormalizedText(selectEl, value) {
+  const normalizedValue = (value || "").trim().toLowerCase();
+  const matchingOption = Array.from(selectEl.options).find(function (option) {
+    return option.value.trim().toLowerCase() === normalizedValue;
+  });
+
+  selectEl.value = matchingOption ? matchingOption.value : "";
+}
+
 function openEditOverlay(category) {
   editingCategoryId = category.id;
-  addCategoryBtn.textContent = "ThÃªm danh má»¥c";
-  editCategoryNameEl.value = category.name;
+  addCategoryBtn.textContent = "Thêm danh mục";
+  setSelectValueByNormalizedText(editCategoryNameEl, category.name);
   editCategoryLimitEl.value = category.limit || "";
   clearEditMessage();
   editOverlayEl.style.display = "flex";
@@ -162,6 +181,35 @@ function getSpentAmountByCategory(month, categoryName) {
 
     return total + Number(transaction?.amount || 0);
   }, 0);
+}
+
+function renameCategoryInTransactions(month, oldCategoryName, newCategoryName) {
+  if (!oldCategoryName || oldCategoryName === newCategoryName) {
+    return;
+  }
+
+  const transactionsByMonth = getStoredTransactions();
+  const transactions = transactionsByMonth[month];
+
+  if (!Array.isArray(transactions) || !transactions.length) {
+    return;
+  }
+
+  transactionsByMonth[month] = transactions.map(function (transaction) {
+    const currentCategoryName = (transaction?.category || "").trim().toLowerCase();
+    const previousCategoryName = oldCategoryName.trim().toLowerCase();
+
+    if (currentCategoryName !== previousCategoryName) {
+      return transaction;
+    }
+
+    return {
+      ...transaction,
+      category: newCategoryName,
+    };
+  });
+
+  saveStoredTransactions(transactionsByMonth);
 }
 
 function updateMoneyLeft(month) {
@@ -283,6 +331,13 @@ function handleAddCategory() {
     return;
   }
 
+  if (!categoryLimit) {
+    showCategoryMessage("Vui lòng nhập số tiền", false);
+    categoryLimitInputEl.classList.add("input-error");
+    categoryLimitInputEl.focus();
+    return;
+  }
+
   const categoriesByMonth = getStoredCategories();
   const categories = categoriesByMonth[selectedMonth] || [];
   const isDuplicate = categories.some(function (category) {
@@ -393,6 +448,16 @@ function handleEditSave() {
 
   const categoriesByMonth = getStoredCategories();
   const categories = categoriesByMonth[selectedMonth] || [];
+  const currentCategory = categories.find(function (category) {
+    return category.id === editingCategoryId;
+  });
+
+  if (!currentCategory) {
+    closeEditOverlay();
+    return;
+  }
+
+  const previousCategoryName = currentCategory.name;
   const isDuplicate = categories.some(function (category) {
     const sameName = category.name.trim().toLowerCase() === categoryName.toLowerCase();
     const isDifferentCategory = category.id !== editingCategoryId;
@@ -418,6 +483,7 @@ function handleEditSave() {
   });
 
   saveStoredCategories(categoriesByMonth);
+  renameCategoryInTransactions(selectedMonth, previousCategoryName, categoryName);
   closeEditOverlay();
   showCategoryMessage("Đã cập nhật danh mục thành công", true);
   renderCategoryList();

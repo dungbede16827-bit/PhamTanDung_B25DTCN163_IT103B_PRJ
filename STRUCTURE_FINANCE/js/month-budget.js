@@ -54,20 +54,6 @@ function saveRemainingMoney(remainingMoneyByMonth) {
   localStorage.setItem(getRemainingMoneyKey(), JSON.stringify(remainingMoneyByMonth));
 }
 
-function getSavedTransactions() {
-  return JSON.parse(localStorage.getItem(getTransactionStorageKey())) || {};
-}
-
-function getTransactionsByMonth(month) {
-  const transactionsByMonth = getSavedTransactions();
-
-  if (Array.isArray(transactionsByMonth[month])) {
-    return transactionsByMonth[month];
-  }
-
-  return [];
-}
-
 function formatCurrencyVND(amount) {
   return `${Number(amount || 0).toLocaleString("vi-VN")} VND`;
 }
@@ -88,6 +74,7 @@ function showBudgetSuccess(message) {
 
   budgetMessageEl.textContent = message;
   budgetMessageEl.classList.add("success");
+  budgetInputEl.classList.remove("input-error");
 }
 
 function clearBudgetMessage() {
@@ -97,6 +84,7 @@ function clearBudgetMessage() {
 
   budgetMessageEl.textContent = "";
   budgetMessageEl.classList.remove("success");
+  budgetInputEl.classList.remove("input-error");
 }
 
 function updateRemainingMoney(month) {
@@ -105,7 +93,10 @@ function updateRemainingMoney(month) {
   }
 
   const remainingMoneyByMonth = getSavedRemainingMoney();
-  const remainingMoney = Number(remainingMoneyByMonth[month] || 0);
+  const remainingMoney =
+    remainingMoneyByMonth[month] !== undefined
+      ? Number(remainingMoneyByMonth[month] || 0)
+      : Number(getSavedBudgets()[month] || 0);
   remainingMoneyEl.textContent = formatCurrencyVND(remainingMoney);
 }
 
@@ -139,6 +130,7 @@ function handleBudgetSave() {
 
   if (!budgetValue) {
     showBudgetWarning("Vui lòng nhập số tiền chi tiêu");
+    budgetInputEl.classList.add("input-error");
     budgetInputEl.focus();
     return;
   }

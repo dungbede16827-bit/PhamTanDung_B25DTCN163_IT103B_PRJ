@@ -210,6 +210,18 @@ h3 {
     flex: 1;
 }
 
+.form input.input-error,
+.edit-form-group input.input-error {
+    border: 1px solid #dc2626;
+    background-color: #fef2f2;
+    color: #991b1b;
+}
+
+.form input.input-error:focus,
+.edit-form-group input.input-error:focus {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
 .input-group {
     position: relative;
     flex: 1;

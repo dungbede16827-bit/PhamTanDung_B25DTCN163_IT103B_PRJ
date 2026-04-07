@@ -9,6 +9,73 @@
 </head>
 
 <body>
+    <div class="modal" id="change-password-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Change Password</h2>
+            <span class="close" id="close-password-modal">✖</span>
+        </div>
+
+        <form id="change-password-form">
+            <label>Old Password <span>*</span></label>
+            <input type="password" id="old-password">
+            <p class="modal-error" id="old-password-error">Please enter your old password...</p>
+
+            <label>New Password <span>*</span></label>
+            <input type="password" id="new-password">
+            <p class="modal-error" id="new-password-error">Please enter your new password...</p>
+
+            <label>Confirm New Password <span>*</span></label>
+            <input type="password" id="confirm-new-password">
+            <p class="modal-error" id="confirm-new-password-error">Please confirm your new password...</p>
+
+            <div class="buttons">
+                <button type="button" class="cancel" id="cancel-password-btn">Cancel</button>
+                <button type="submit" class="save">Save</button>
+            </div>
+        </form>
+    </div>
+    </div>
+
+    <div class="modal" id="change-info-modal">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2>Change Information</h2>
+            <span class="close" id="close-info-modal">✖</span>
+        </div>
+
+        <form id="change-info-form">
+
+            <label>Name <span>*</span></label>
+            <input type="text" id="modal-name" value="Nguyen Van A">
+            <p class="modal-error" id="modal-name-error">Please enter your name...</p>
+
+            <label>Email <span>*</span></label>
+            <input type="email" id="modal-email" value="nguyenvana@gmail.com">
+            <p class="modal-error" id="modal-email-error">Please enter your email...</p>
+
+            <label>Phone <span>*</span></label>
+            <input type="text" id="modal-phone" value="0987654321">
+            <p class="modal-error" id="modal-phone-error">Please enter your phone...</p>
+
+            <label>Gender <span>*</span></label>
+            <select id="modal-gender">
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+            <p class="modal-error" id="modal-gender-error">Please select your gender...</p>
+
+            <div class="buttons">
+                <button type="button" class="cancel" id="cancel-info-btn">Cancel</button>
+                <button type="submit" class="save">Save</button>
+            </div>
+
+        </form>
+        </div>
+    </div>
 
     <header class="topbar">
         <div class="home">
@@ -29,24 +96,22 @@
 
       
 
-    <div class="sidebar">
+    <div class="taskbar">
+        <div class="taskbar-items">
+            <img src="./assets/images/1.png" alt="" />
+            <a href="./index.html">Information</a>
+        </div>
 
-    <a href="" class="menu active">
-        <span class="icon"><img src="../assets/images/1.png" alt="" /></span>
-        Information
-    </a>
+        <div class="taskbar-items">
+            <img src="./assets/images/Vector (2).png" alt="" />
+            <a href="./pages/category.html">Category</a>
+        </div>
 
-    <a href="./pages/category.html" class="menu">
-        <span class="icon"><img src="../assets/images/Vector (2).png" alt="" /></span>
-        Category
-    </a>
-
-    <a href="./pages/history.html" class="menu">
-        <span class="icon"><img src="./assets/images/Vector.svg" alt="" /></span>
-        History
-    </a>
-
-</div>
+        <div class="taskbar-items">
+            <img src="./assets/images/Vector.svg" alt="" />
+            <a href="./pages/history.html">History</a>
+        </div>
+    </div>
 
     <section class="banner">
         <h2>🎯 Kiểm soát chi tiêu thông minh</h2>
@@ -86,30 +151,34 @@
     <div class="form-row">
         <div class="form-group is-success">
             <label>Name <span class="required">*</span></label>
-            <input type="text" value="Nguyen Van A">
+            <input type="text" id="profile-name" value="Nguyen Van A" readonly>
         </div>
 
         <div class="form-group">
             <label>Email <span class="required">*</span></label>
-            <input type="email" value="nguyenvana@gmail.com">
+            <input type="email" id="profile-email" value="nguyenvana@gmail.com" readonly>
         </div>
     </div>
 
     <div class="form-row">
         <div class="form-group">
             <label>Phone <span class="required">*</span></label>
-            <input type="text" value="0987654321">
+            <input type="text" id="profile-phone" value="0987654321" readonly>
         </div>
 
         <div class="form-group">
             <label>Gender <span class="required">*</span></label>
-            <input type="text" value="Male">
+            <select id="profile-gender" disabled>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
         </div>
     </div>
 
     <div class="button-group">
-        <button class="btn-outline">Change Information</button>
-        <button class="btn-outline">Change Password</button>
+        <button class="btn-outline" id="change-info-btn" type="button">Change Information</button>
+        <button class="btn-outline" id="change-password-btn" type="button">Change Password</button>
     </div>
 </div>    
     <footer>
